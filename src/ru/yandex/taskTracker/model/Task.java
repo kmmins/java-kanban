@@ -5,7 +5,7 @@ public class Task {
     private String name;
     private String description;
     protected String status = "NEW";
-    /////////////////////////////////////////////////
+    ///////////////////////constructors//////////////////////////////////////////////////////////////////
     public Task() {
     }
     public Task(int id, String name, String description, String status) {
@@ -14,7 +14,7 @@ public class Task {
         this.description = description;
         this.status = status;
     }
-    /////////////////////////////////////////////////
+    /////////////////////////get&set/////////////////////////////////////////////////////////////////////
     public int getId() {
         return id;
     }
@@ -32,5 +32,15 @@ public class Task {
     }
     public String getStatus() {
         return status;
+    }
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    @Override
+    public String toString() {
+        return "Task{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", status='" + status + '\'' +
+                '}';
     }
 }
