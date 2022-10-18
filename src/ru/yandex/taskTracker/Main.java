@@ -28,14 +28,5 @@ public class Main {
                     break;
             }
         }
-
-        /*testService.createTask();
-        testService.getAll();
-        testService.createTask();
-        testService.getAll();
-        testService.updateTask();
-        testService.getAll();
-        testService.delTask();
-        testService.getAll();*/
     }
 }

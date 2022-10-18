@@ -175,11 +175,11 @@ public class TestService {
         System.out.println("Выберете действие: ");
         System.out.println("1 - Получение списка всех задач");
         System.out.println("2 - Удаление всех задач");
-        System.out.println("3 - Получение задачи по идентификатору (ПОКА НЕ ГОТОВО)");
+        System.out.println("3 - Получение задачи по идентификатору (НЕ ГОТОВО)");
         System.out.println("4 - Создание задачи");
         System.out.println("5 - Обновление задачи");
         System.out.println("6 - Удаление задачи по идентификатору");
-        System.out.println("7 - Получение списка всех подзадач определённого эпика (ПОКА НЕ ГОТОВО)");
+        System.out.println("7 - Получение списка всех подзадач определённого эпика (НЕ ГОТОВО)");
         System.out.println("0 - Вернутся назад");
     }
 }
