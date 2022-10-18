@@ -52,8 +52,7 @@ public class TaskManager {
     }
 
     public Epic getEpicById(int id) {
-        Epic task = epicData.get(id);
-        return new Epic(task.getId(), task.getName(), task.getDescription(), evaluateEpicStatus(task), getEpicSubTasks(task));
+        return epicData.get(id);
     }
 
     public void createTask(Task task) {
@@ -63,8 +62,15 @@ public class TaskManager {
 
     public void createSubTask(SubTask task) {
         subTaskCounterId += 1;
-        subTaskData.put(subTaskCounterId, new SubTask(subTaskCounterId, task.getName(), task.getDescription(),
-                task.getStatus(), task.getEpicId()));
+        SubTask name = new SubTask(subTaskCounterId, task.getName(), task.getDescription(),
+                task.getStatus(), task.getEpicId());
+
+        subTaskData.put(subTaskCounterId, name);
+
+        Epic name2 = getEpicById(name.getEpicId());
+        name2.getRelatedSubTasks().add(name);
+        updateEpicStatus(name2);
+
     }
 
     public void createEpic(Epic task) {
@@ -79,6 +85,7 @@ public class TaskManager {
 
     public void updateSubTask(SubTask task) {
         subTaskData.put(task.getId(), task);
+        updateEpicStatus(getEpicById(task.getEpicId()));
     }
 
     public void updateEpic(Epic task) {
@@ -90,7 +97,13 @@ public class TaskManager {
     }
 
     public void deleteSubTaskById(int id) {
+        SubTask someSubTask = getSubTaskById(id);
+
         subTaskData.remove(id);
+
+        Epic someEpicTask = getEpicById(someSubTask.getEpicId());
+        someEpicTask.getRelatedSubTasks().remove(someSubTask);
+        updateEpicStatus(someEpicTask);
     }
 
     public void deleteEpicById(int id) {
@@ -129,5 +142,9 @@ public class TaskManager {
             return "DONE";
         }
         return "IN_PROGRESS";
+    }
+
+    private void updateEpicStatus(Epic task) {
+        task.setStatus(evaluateEpicStatus(task));
     }
 }

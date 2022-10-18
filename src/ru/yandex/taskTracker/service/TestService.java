@@ -123,12 +123,15 @@ public class TestService {
                     switch (status) {
                         case 1:
                             subTask.setStatus("NEW");
+                            taskManager.updateSubTask(subTask);
                             break;
                         case 2:
                             subTask.setStatus("IN_PROGRESS");
+                            taskManager.updateSubTask(subTask);
                             break;
                         case 3:
                             subTask.setStatus("DONE");
+                            taskManager.updateSubTask(subTask);
                             break;
                         default:
                             System.out.println("Извините, такой команды пока нет");

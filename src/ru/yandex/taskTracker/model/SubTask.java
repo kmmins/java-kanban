@@ -16,8 +16,4 @@ public class SubTask extends Task {
     public int getEpicId() {
         return epicId;
     }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
 }
