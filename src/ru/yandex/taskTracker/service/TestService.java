@@ -180,9 +180,11 @@ public class TestService {
 
         switch (smallOrBig) {
             case 1:
+                System.out.println("Маленькие задачи: ");
                 System.out.println(taskManager.getSubTaskById(iDsmallOrBig));
                 break;
             case 2:
+                System.out.println("Большие задачи: ");
                 System.out.println(taskManager.getEpicById(iDsmallOrBig));
                 break;
             default:
@@ -212,10 +214,3 @@ public class TestService {
         System.out.println("0 - Вернутся назад");
     }
 }
-
-/*Создайте в классе Main метод static void main(String[] args) и внутри него:
-Создайте 2 задачи, один эпик с 2 подзадачами, а другой эпик с 1 подзадачей.
-Распечатайте списки эпиков, задач и подзадач, через System.out.println(..)
-Измените статусы созданных объектов, распечатайте. Проверьте, что статус задачи и подзадачи сохранился,
-а статус эпика рассчитался по статусам подзадач.
-И, наконец, попробуйте удалить одну из задач и один из эпиков.*/

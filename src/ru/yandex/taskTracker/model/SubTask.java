@@ -4,7 +4,6 @@ public class SubTask extends Task {
 
     private int epicId;
 
-    ///////////////////////constructors///////////////////////////////////////////////////////////////////////////////
     public SubTask(int epicId) {
         this.epicId = epicId;
     }
@@ -14,7 +13,6 @@ public class SubTask extends Task {
         this.epicId = epicId;
     }
 
-    /////////////////////////get&set//////////////////////////////////////////////////////////////////////////////////
     public int getEpicId() {
         return epicId;
     }
@@ -22,5 +20,4 @@ public class SubTask extends Task {
     public void setStatus(String status) {
         this.status = status;
     }
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
