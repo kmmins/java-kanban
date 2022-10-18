@@ -3,6 +3,7 @@ package ru.yandex.taskTracker.service;
 import ru.yandex.taskTracker.model.Epic;
 import ru.yandex.taskTracker.model.SubTask;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class TestService {
@@ -24,6 +25,7 @@ public class TestService {
                     delAll();
                     break;
                 case 3:
+                    getById();
                     break;
                 case 4:
                     createTask();
@@ -35,6 +37,7 @@ public class TestService {
                     delTask();
                     break;
                 case 7:
+                    getSubTaskByEpic();
                     break;
                 case 0:
                     System.out.println("Выход из меню...");
@@ -114,25 +117,23 @@ public class TestService {
                     System.out.println("Какую маленькую задачу изменяем? Введите ID: ");
                     int idSubTask = scannerInt.nextInt();
                     SubTask subTask = taskManager.getSubTaskById(idSubTask);
-                    System.out.println("Изменить статус задачи\r\n(1 - Новая задача, 2 - В процессе выполнения, "
-                            + "3 - Выполнено)");
+                    System.out.println("Изменить статус задачи\r\n1 - Новая задача\r\n2 - В процессе выполнения\r\n"
+                            + "3 - Выполнено");
                     int status = scannerInt.nextInt();
                     switch (status) {
-                        case 1: // (NEW)
+                        case 1:
                             subTask.setStatus("NEW");
                             break;
-                        case 2: // (IN_PROGRESS)
+                        case 2:
                             subTask.setStatus("IN_PROGRESS");
                             break;
-                        case 3: // (DONE)
+                        case 3:
                             subTask.setStatus("DONE");
                             break;
                         default:
                             System.out.println("Извините, такой команды пока нет");
                             break;
                     }
-                    //subTask.setStatus(scannerLine.nextLine());
-                    //taskManager.updateSubTask(subTask);
                     break;
                 case 0:
                     System.out.println("Выход из меню...");
@@ -171,15 +172,43 @@ public class TestService {
         }
     }
 
+    public void getById() {
+        System.out.println("Какую задачу нужно получить?\r\n1 - маленькую\r\n2 - большую");
+        int smallOrBig = scannerInt.nextInt();
+        System.out.println("Введите ID: ");
+        int iDsmallOrBig = scannerInt.nextInt();
+
+        switch (smallOrBig) {
+            case 1:
+                System.out.println(taskManager.getSubTaskById(iDsmallOrBig));
+                break;
+            case 2:
+                System.out.println(taskManager.getEpicById(iDsmallOrBig));
+                break;
+            default:
+                System.out.println("Извините, такой команды пока нет");
+                break;
+        }
+    }
+
+    public void getSubTaskByEpic() {
+        ArrayList<SubTask> output;
+        System.out.println("Для какой большой задачи нужно поулчить маленькие задачи? Введите ID: ");
+        int idEpicTask = scannerInt.nextInt();
+        output = taskManager.getEpicSubTasks(taskManager.getEpicById(idEpicTask));
+        System.out.println("Для большой задачи: " + taskManager.getEpicById(idEpicTask)
+                + " Получены маленькие задачи :" + output);
+    }
+
     public static void printTestMenu() {
         System.out.println("Выберете действие: ");
         System.out.println("1 - Получение списка всех задач");
         System.out.println("2 - Удаление всех задач");
-        System.out.println("3 - Получение задачи по идентификатору (НЕ ГОТОВО)");
+        System.out.println("3 - Получение задачи по идентификатору");
         System.out.println("4 - Создание задачи");
         System.out.println("5 - Обновление задачи");
         System.out.println("6 - Удаление задачи по идентификатору");
-        System.out.println("7 - Получение списка всех подзадач определённого эпика (НЕ ГОТОВО)");
+        System.out.println("7 - Получение списка всех подзадач определённого эпика");
         System.out.println("0 - Вернутся назад");
     }
 }

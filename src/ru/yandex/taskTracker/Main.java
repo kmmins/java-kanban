@@ -12,7 +12,7 @@ public class Main {
 
         imOutOfHere:
         while (true) {
-            System.out.println("\r\n///////////////////\r\n//  Таск Трекер  //\r\n///////////////////");
+            System.out.println("\r\n////////////////////\r\n//  Task Tracker  //\r\n////////////////////");
 
             System.out.println("\r\nЗапустить тестирование программы?\r\n1 - Да, 0 - Выйти из программы");
             int commandMain = scannerIntMain.nextInt();
