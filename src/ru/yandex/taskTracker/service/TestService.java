@@ -9,14 +9,13 @@ import java.util.Scanner;
 public class TestService {
 
     TaskManager taskManager = new TaskManager();
-    Scanner scannerInt = new Scanner(System.in);
-    Scanner scannerLine = new Scanner(System.in);
+    Scanner scanner = new Scanner(System.in);
 
     public void runTest() {
         imOutOfHere:
         while (true) {
             printTestMenu();
-            int command = scannerInt.nextInt();
+            int command = scanner.nextInt();
             switch (command) {
                 case 1:
                     getAll();
@@ -69,16 +68,16 @@ public class TestService {
         while (true) {
             System.out.println("1 - создать маленькую задачи\r\n2 - создать большую задачу\r\n0 - Вернутся назад");
             int command;
-            command = scannerInt.nextInt();
+            command = scanner.nextInt();
             switch (command) {
                 case 1:
                     System.out.println("К какой большой задаче относиться создаваемая маленькая задача? Введите ID: ");
-                    SubTask subTask = new SubTask(scannerInt.nextInt());
-
+                    SubTask subTask = new SubTask(scanner.nextInt());
+                    scanner.nextLine();
                     System.out.println("Введите имя маленькой задачи: ");
-                    subTask.setName(scannerLine.nextLine());
+                    subTask.setName(scanner.nextLine());
                     System.out.println("Введите описание маленькой задачи: ");
-                    subTask.setDescription(scannerLine.nextLine());
+                    subTask.setDescription(scanner.nextLine());
 
                     taskManager.createSubTask(subTask);
                     System.out.println("Создана маленькая задача: имя " + subTask.getName() + ", описание: "
@@ -87,10 +86,11 @@ public class TestService {
                 case 2:
                     Epic epicTask = new Epic();
                     System.out.println("Введите имя большой задачи: ");
-                    String name = scannerLine.nextLine();
+                    scanner.nextLine();
+                    String name = scanner.nextLine();
                     epicTask.setName(name);
                     System.out.println("Введите описание большой задачи: ");
-                    epicTask.setDescription(scannerLine.nextLine());
+                    epicTask.setDescription(scanner.nextLine());
 
                     taskManager.createEpic(epicTask);
                     System.out.println("Создана большая задача: " + epicTask.getName()
@@ -111,15 +111,15 @@ public class TestService {
         while (true) {
             System.out.println("1 - изменить статус маленькой задачи\r\n0 - Вернутся назад");
             int command;
-            command = scannerInt.nextInt();
+            command = scanner.nextInt();
             switch (command) {
                 case 1:
                     System.out.println("Какую маленькую задачу изменяем? Введите ID: ");
-                    int idSubTask = scannerInt.nextInt();
+                    int idSubTask = scanner.nextInt();
                     SubTask subTask = taskManager.getSubTaskById(idSubTask);
                     System.out.println("Изменить статус задачи\r\n1 - Новая задача\r\n2 - В процессе выполнения\r\n"
                             + "3 - Выполнено");
-                    int status = scannerInt.nextInt();
+                    int status = scanner.nextInt();
                     switch (status) {
                         case 1:
                             subTask.setStatus("NEW");
@@ -153,16 +153,16 @@ public class TestService {
         while (true) {
             System.out.println("1 - удалить маленькую задачу\r\n2 - удалить большую задачу\r\n0 - Вернутся назад");
             int command;
-            command = scannerInt.nextInt();
+            command = scanner.nextInt();
             switch (command) {
                 case 1:
                     System.out.println("Какую маленькую задачу удалить? Введите ID: ");
-                    int idSubTask = scannerInt.nextInt();
+                    int idSubTask = scanner.nextInt();
                     taskManager.deleteSubTaskById(idSubTask);
                     break;
                 case 2:
                     System.out.println("Какуой большую задачу удалить? Введите ID: ");
-                    int idEpicTask = scannerInt.nextInt();
+                    int idEpicTask = scanner.nextInt();
                     taskManager.deleteEpicById(idEpicTask);
                     break;
                 case 0:
@@ -177,9 +177,9 @@ public class TestService {
 
     public void getById() {
         System.out.println("Какую задачу нужно получить?\r\n1 - маленькую\r\n2 - большую");
-        int smallOrBig = scannerInt.nextInt();
+        int smallOrBig = scanner.nextInt();
         System.out.println("Введите ID: ");
-        int iDsmallOrBig = scannerInt.nextInt();
+        int iDsmallOrBig = scanner.nextInt();
 
         switch (smallOrBig) {
             case 1:
@@ -199,7 +199,7 @@ public class TestService {
     public void getSubTaskByEpic() {
         ArrayList<SubTask> output;
         System.out.println("Для какой большой задачи нужно поулчить маленькие задачи? Введите ID: ");
-        int idEpicTask = scannerInt.nextInt();
+        int idEpicTask = scanner.nextInt();
         output = taskManager.getEpicSubTasks(taskManager.getEpicById(idEpicTask));
         System.out.println("Для большой задачи: " + taskManager.getEpicById(idEpicTask)
                 + " Получены маленькие задачи :" + output);
