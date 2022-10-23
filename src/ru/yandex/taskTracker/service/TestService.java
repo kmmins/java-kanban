@@ -42,6 +42,9 @@ public class TestService {
                 case 7:
                     getSubTaskByEpic();
                     break;
+                case 8:
+                    getH();
+                    break;
                 case 0:
                     System.out.println("Выход из меню...");
                     break imOutOfHere;
@@ -209,6 +212,11 @@ public class TestService {
                 + " Получены маленькие задачи :" + output);
     }
 
+    public void getH(){
+        System.out.println(taskManager.getHistory());
+
+    }
+
     public static void printTestMenu() {
         System.out.println("Выберете действие: ");
         System.out.println("1 - Получение списка всех задач");
@@ -218,6 +226,7 @@ public class TestService {
         System.out.println("5 - Обновление задачи");
         System.out.println("6 - Удаление задачи по идентификатору");
         System.out.println("7 - Получение списка всех подзадач определённого эпика");
+        System.out.println("8 - Получить историю");
         System.out.println("0 - Вернутся назад");
     }
 }
