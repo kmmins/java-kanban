@@ -2,13 +2,17 @@ package ru.yandex.taskTracker.service;
 
 import ru.yandex.taskTracker.model.Epic;
 import ru.yandex.taskTracker.model.SubTask;
+import ru.yandex.taskTracker.model.TaskStatus;
 
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class TestService {
 
-    TaskManager taskManager = new TaskManager();
+    Managers managers = new Managers();
+
+    TaskManager taskManager = managers.getDefault();
+
     Scanner scanner = new Scanner(System.in);
 
     public void runTest() {
@@ -122,15 +126,15 @@ public class TestService {
                     int status = scanner.nextInt();
                     switch (status) {
                         case 1:
-                            subTask.setStatus("NEW");
+                            subTask.setStatus(TaskStatus.NEW);
                             taskManager.updateSubTask(subTask);
                             break;
                         case 2:
-                            subTask.setStatus("IN_PROGRESS");
+                            subTask.setStatus(TaskStatus.IN_PROGRESS);
                             taskManager.updateSubTask(subTask);
                             break;
                         case 3:
-                            subTask.setStatus("DONE");
+                            subTask.setStatus(TaskStatus.DONE);
                             taskManager.updateSubTask(subTask);
                             break;
                         default:
