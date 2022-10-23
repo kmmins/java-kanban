@@ -151,9 +151,9 @@ public interface TaskManager {
     ArrayList<SubTask> getEpicSubTasks(Epic task);
 
     /**
-     * <p>Получает историю последних 10 обращений к методам getSubTaskById и getEpicById </p>
+     * <p>Получает историю последних 10 обращений к методам getSubTaskById() и getEpicById() </p>
      *
-     * @return возвращает список задач Task последних 10 обращений к getSubTaskById и getEpicById
+     * @return возвращает список задач Task последних 10 обращений к getSubTaskById() и getEpicById()
      * @see #getEpicById
      * @see #getSubTaskById
      */
