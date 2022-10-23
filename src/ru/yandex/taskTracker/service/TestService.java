@@ -9,9 +9,7 @@ import java.util.Scanner;
 
 public class TestService {
 
-    Managers managers = new Managers();
-
-    TaskManager taskManager = managers.getDefault();
+    TaskManager taskManager = Managers.getDefault();
 
     Scanner scanner = new Scanner(System.in);
 

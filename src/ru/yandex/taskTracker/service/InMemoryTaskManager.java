@@ -60,7 +60,6 @@ public class InMemoryTaskManager implements TaskManager {
         return subTask;
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     @Override
     public Epic getEpicById(int id) {
         Epic epic = epicData.get(id);
@@ -68,7 +67,6 @@ public class InMemoryTaskManager implements TaskManager {
         return epic;
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     @Override
     public void createTask(Task task) {
         taskCounterId += 1;
@@ -99,7 +97,6 @@ public class InMemoryTaskManager implements TaskManager {
     public void updateTask(Task task) {
         taskData.put(task.getId(), task);
     }
-
 
     @Override
     public void updateSubTask(SubTask task) {
