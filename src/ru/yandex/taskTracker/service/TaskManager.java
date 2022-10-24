@@ -3,7 +3,6 @@ package ru.yandex.taskTracker.service;
 import ru.yandex.taskTracker.model.*;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public interface TaskManager {
 
@@ -149,13 +148,4 @@ public interface TaskManager {
      * @return список epicSubTasks содержащий задачи SubTasks
      */
     ArrayList<SubTask> getEpicSubTasks(Epic task);
-
-    /**
-     * <p>Получает историю последних 10 обращений к методам getSubTaskById() и getEpicById() </p>
-     *
-     * @return возвращает список задач Task последних 10 обращений к getSubTaskById() и getEpicById()
-     * @see #getEpicById
-     * @see #getSubTaskById
-     */
-    List<Task> getHistory();
 }

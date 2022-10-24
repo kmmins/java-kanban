@@ -3,15 +3,15 @@ package ru.yandex.taskTracker.service;
 import ru.yandex.taskTracker.model.*;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.HashMap;
 
 public class InMemoryTaskManager implements TaskManager {
+
+    HistoryManager historyManager = Managers.getDefaultHistory();
+
     private int taskCounterId = 0;
     private int subTaskCounterId = 0;
     private int epicCounterId = 0;
-
-    private final List<Task> historyName = new ArrayList<>();
 
     private HashMap<Integer, Task> taskData = new HashMap<>();
     private HashMap<Integer, SubTask> subTaskData = new HashMap<>();
@@ -56,14 +56,14 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public SubTask getSubTaskById(int id) {
         SubTask subTask = subTaskData.get(id);
-        appendHistory(subTask);
+        historyManager.appendHistory(subTask);
         return subTask;
     }
 
     @Override
     public Epic getEpicById(int id) {
         Epic epic = epicData.get(id);
-        appendHistory(epic);
+        historyManager.appendHistory(epic);
         return epic;
     }
 
@@ -144,11 +144,6 @@ public class InMemoryTaskManager implements TaskManager {
         return epicSubTasks;
     }
 
-    @Override
-    public List<Task> getHistory() {
-        return historyName;
-    }
-
     private TaskStatus evaluateEpicStatus(Epic task) {
         int newCount = 0;
         int doneCount = 0;
@@ -172,12 +167,5 @@ public class InMemoryTaskManager implements TaskManager {
 
     private void updateEpicStatus(Epic task) {
         task.setStatus(evaluateEpicStatus(task));
-    }
-
-    private void appendHistory(Task task) {
-        historyName.add(task);
-        if (historyName.size() > 10) {
-            historyName.remove(0);
-        }
     }
 }

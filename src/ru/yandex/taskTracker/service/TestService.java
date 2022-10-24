@@ -10,6 +10,7 @@ import java.util.Scanner;
 public class TestService {
 
     TaskManager taskManager = Managers.getDefault();
+    HistoryManager historyManager = Managers.getDefaultHistory();
 
     Scanner scanner = new Scanner(System.in);
 
@@ -211,8 +212,7 @@ public class TestService {
     }
 
     public void getH(){
-        System.out.println(taskManager.getHistory());
-
+        System.out.println("История задач: " +  historyManager.getHistoryName() + " храниться тут");
     }
 
     public static void printTestMenu() {
