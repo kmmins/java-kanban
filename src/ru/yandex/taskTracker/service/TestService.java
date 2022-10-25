@@ -9,10 +9,9 @@ import java.util.Scanner;
 
 public class TestService {
 
-    TaskManager taskManager = Managers.getDefault();
-    HistoryManager historyManager = Managers.getDefaultHistory();
+    private TaskManager taskManager = Managers.getDefault();
 
-    Scanner scanner = new Scanner(System.in);
+    private Scanner scanner = new Scanner(System.in);
 
     public void runTest() {
         imOutOfHere:
@@ -212,7 +211,7 @@ public class TestService {
     }
 
     public void getH(){
-        System.out.println("История задач: " +  historyManager.getHistoryName() + " храниться тут");
+        System.out.println("История задач: " +  taskManager.getHistoryName() + " храниться тут");
     }
 
     public static void printTestMenu() {

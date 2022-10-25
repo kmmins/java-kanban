@@ -4,10 +4,11 @@ import ru.yandex.taskTracker.model.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
 
-    HistoryManager historyManager = Managers.getDefaultHistory();
+    private HistoryManager historyManager = Managers.getDefaultHistory();
 
     private int taskCounterId = 0;
     private int subTaskCounterId = 0;
@@ -50,7 +51,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getTaskById(int id) {
-        return taskData.get(id);
+        Task task = taskData.get(id);
+        historyManager.appendHistory(task);
+        return task;
     }
 
     @Override
@@ -167,5 +170,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     private void updateEpicStatus(Epic task) {
         task.setStatus(evaluateEpicStatus(task));
+    }
+
+    @Override
+    public List<Task> getHistoryName() {
+        return historyManager.getHistoryName();
     }
 }
