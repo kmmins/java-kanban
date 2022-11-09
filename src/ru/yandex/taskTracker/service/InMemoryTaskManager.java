@@ -11,8 +11,6 @@ public class InMemoryTaskManager implements TaskManager {
     private HistoryManager historyManager = Managers.getDefaultHistory();
 
     private int taskCounterId = 0;
-    private int subTaskCounterId = 0;
-    private int epicCounterId = 0;
 
     private HashMap<Integer, Task> taskData = new HashMap<>();
     private HashMap<Integer, SubTask> subTaskData = new HashMap<>();
@@ -78,11 +76,11 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void createSubTask(SubTask task) {
-        subTaskCounterId += 1;
-        SubTask newSbT = new SubTask(subTaskCounterId, task.getName(), task.getDescription(),
+        taskCounterId += 1;
+        SubTask newSbT = new SubTask(taskCounterId, task.getName(), task.getDescription(),
                 task.getStatus(), task.getEpicId());
 
-        subTaskData.put(subTaskCounterId, newSbT);
+        subTaskData.put(taskCounterId, newSbT);
 
         Epic eSbT = epicData.get(newSbT.getEpicId());
         eSbT.getRelatedSubTasks().add(newSbT);
@@ -91,8 +89,8 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void createEpic(Epic task) {
-        epicCounterId += 1;
-        epicData.put(epicCounterId, new Epic(epicCounterId, task.getName(), task.getDescription(),
+        taskCounterId += 1;
+        epicData.put(taskCounterId, new Epic(taskCounterId, task.getName(), task.getDescription(),
                 evaluateEpicStatus(task), new ArrayList<>()));
     }
 
@@ -115,6 +113,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteTaskById(int id) {
         taskData.remove(id);
+        historyManager.remove(id);
     }
 
     @Override
@@ -126,6 +125,7 @@ public class InMemoryTaskManager implements TaskManager {
         Epic someEpicTask = epicData.get(someSubTask.getEpicId());
         someEpicTask.getRelatedSubTasks().remove(someSubTask);
         updateEpicStatus(someEpicTask);
+        historyManager.remove(id);
     }
 
     @Override
@@ -134,6 +134,7 @@ public class InMemoryTaskManager implements TaskManager {
             subTaskData.remove(element.getId());
         }
         epicData.remove(id);
+        historyManager.remove(id);
     }
 
     @Override

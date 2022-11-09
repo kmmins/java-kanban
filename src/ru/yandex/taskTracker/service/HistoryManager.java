@@ -13,6 +13,12 @@ public interface HistoryManager {
      */
     void appendHistory(Task task);
 
+    /** <p>Удаляет задачи из просмотра </p>
+     *
+     * @param id
+     */
+    void remove(int id);
+
     /**
      * <p>Получает историю последних 10 обращений к методам getSubTaskById() и getEpicById() </p>
      *

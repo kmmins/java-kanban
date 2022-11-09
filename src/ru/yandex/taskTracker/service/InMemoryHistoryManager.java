@@ -10,6 +10,11 @@ public class InMemoryHistoryManager implements HistoryManager {
     private List<Task> historyName = new ArrayList<>();
 
     @Override
+    public void remove(int id) {
+
+    }
+
+    @Override
     public List<Task> getHistoryName() {
         return historyName;
     }
