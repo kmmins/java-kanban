@@ -14,18 +14,20 @@ public class InMemoryHistoryManager implements HistoryManager {
     private HashMap<Integer, Node<Task>> hashMapName = new HashMap<>();
 
     @Override
-    public void remove(int id) {
-        customLinkedListName.removeNod(hashMapName.get(id));
-        hashMapName.remove(id);
-    }
-
-    @Override
     public void appendHistory(Task task) {
         if (hashMapName.containsKey(task.getId())) {
             remove(task.getId());
         }
-            customLinkedListName.linkLast(task);
-            hashMapName.put(task.getId(), customLinkedListName.tail);
+        customLinkedListName.linkLast(task);
+        hashMapName.put(task.getId(), customLinkedListName.tail);
+    }
+
+    @Override
+    public void remove(int id) {
+        if (hashMapName.containsKey(id)) {
+            customLinkedListName.removeNod(hashMapName.get(id));
+            hashMapName.remove(id);
+        }
     }
 
     @Override
@@ -52,27 +54,25 @@ public class InMemoryHistoryManager implements HistoryManager {
             if (head == null) {
                 return result;
             } else {
-                Node<Task> nodeI = head;
-                result.add(nodeI.data);
-                while (nodeI.next != null) {
-                    nodeI = nodeI.next;
-                    result.add(nodeI.data);
+                Node<Task> nodeIter = head;
+                result.add(nodeIter.data);
+                while (nodeIter.next != null) {
+                    nodeIter = nodeIter.next;
+                    result.add(nodeIter.data);
                 }
                 return result;
             }
         }
 
-        public void removeNod(Node<Task> x) {
+        public void removeNod(Node<Task> nodeX) {
 
-            final Node<Task> next = x.next;
-            final Node<Task> prev = x.prev;
-
+            final Node<Task> next = nodeX.next;
+            final Node<Task> prev = nodeX.prev;
             if (prev == null) {
                 head = next;
             } else {
                 prev.next = next;
             }
-
             if (next == null) {
                 tail = prev;
             } else {

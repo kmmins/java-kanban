@@ -3,7 +3,6 @@ package ru.yandex.taskTracker.service;
 import ru.yandex.taskTracker.model.Epic;
 import ru.yandex.taskTracker.model.SubTask;
 import ru.yandex.taskTracker.model.TaskStatus;
-
 import java.util.ArrayList;
 import java.util.Scanner;
 
