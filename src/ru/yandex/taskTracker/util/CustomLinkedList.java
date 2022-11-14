@@ -10,12 +10,12 @@ public class CustomLinkedList {
     public Node<Task> tail;
 
     /**
-     * p>Вспомогательная HashMap отслеживает повторяющиеся id вызванных задач хранящихся в CustomLinkedList </p>
+     * p>Вспомогательная HashMap помогает отслеживать повторяющиеся id вызванных задач хранящихся в CustomLinkedList </p>
      */
     public HashMap<Integer, Node<Task>> hashMap = new HashMap<>();
 
     /**
-     * <p>Связывает задачу в CustomLinkedList </p>
+     * <p>Метод связывает задачу в CustomLinkedList </p>
      *
      * @param task задача полученная по id
      */
@@ -51,7 +51,7 @@ public class CustomLinkedList {
     }
 
     /**
-     * <p>Вырезает узел из CustomLinkedList </p>
+     * <p>Метод вырезает узел из CustomLinkedList </p>
      *
      * @param nodeX узел который необходимо вырезать из CustomLinkedList
      */
@@ -74,7 +74,7 @@ public class CustomLinkedList {
     /**
      * <p>Узел, в связанном списке CustomLinkedList</p>
      *
-     * @param <T> принимает объект типа <Task>
+     * @param <T> принимает объект типа Task
      */
     public class Node<T> {
 
