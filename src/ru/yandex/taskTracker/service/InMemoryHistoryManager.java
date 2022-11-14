@@ -8,29 +8,27 @@ import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
-    private CustomLinkedList customLinkedListName = new CustomLinkedList();
-
-    private HashMap<Integer, CustomLinkedList.Node<Task>> hashMapName = new HashMap<>();
+    private CustomLinkedList customList = new CustomLinkedList();
 
     @Override
     public void appendHistory(Task task) {
-        if (hashMapName.containsKey(task.getId())) {
+        if (customList.hashMap.containsKey(task.getId())) {
             remove(task.getId());
         }
-        customLinkedListName.linkLast(task);
-        hashMapName.put(task.getId(), customLinkedListName.tail);
+        customList.linkLast(task);
+        customList.hashMap.put(task.getId(), customList.tail);
     }
 
     @Override
     public void remove(int id) {
-        CustomLinkedList.Node<Task> value = hashMapName.remove(id);
+        CustomLinkedList.Node<Task> value = customList.hashMap.remove(id);
         if (value != null) {
-            customLinkedListName.removeNod(value);
+            customList.removeNod(value);
         }
     }
 
     @Override
     public List<Task> getHistoryName() {
-        return customLinkedListName.getTasks();
+        return customList.getTasks();
     }
 }

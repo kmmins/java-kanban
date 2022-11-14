@@ -3,10 +3,16 @@ package ru.yandex.taskTracker.util;
 import ru.yandex.taskTracker.model.Task;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class CustomLinkedList {
     public Node<Task> head;
     public Node<Task> tail;
+
+    /**
+     * p>Вспомогательная HashMap отслеживает повторяющиеся id вызванных задач хранящихся в CustomLinkedList </p>
+     */
+    public HashMap<Integer, Node<Task>> hashMap = new HashMap<>();
 
     /**
      * <p>Связывает задачу в CustomLinkedList </p>
