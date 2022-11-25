@@ -7,7 +7,6 @@ import ru.yandex.taskTracker.model.Task;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -18,21 +17,24 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
     public void save() {
 
+        Path saveDirPath = Path.of(".resources");
         Path saveFilePath = Paths.get(".resources\\autosave.csv");
 
-        try {
-            Files.createDirectory(Path.of(".resources"));
+        if(!Files.exists((saveDirPath))) {
+            try {
+                Files.createDirectory(saveDirPath);
 
-        } catch (IOException e) {
-            System.out.println("Произошла ошибка при создании директории: " + e.getMessage());
-            e.printStackTrace();
+            } catch (IOException e) {
+                System.out.println("Произошла ошибка при создании файла/директории: " + e.getMessage());
+                e.printStackTrace();
+            }
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         try (
                 FileWriter writer = new FileWriter(saveFilePath.toFile());
                 BufferedWriter fileWriter = new BufferedWriter(writer)) {
 
-            fileWriter.write("id,type,name,status,description,epic");
+            fileWriter.write("id,type,name,status,description,epic3");
 
         } catch (
                 IOException e) {
@@ -40,6 +42,34 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         }
     }
 
+    /*public static FileBackedTasksManager load(File saveFilePath) throws IOException {
+        Files.readString(saveFilePath);
+        return null;
+    }*/
+
+    public String saveTaskToString(Task task) {
+        String saveString = null;
+
+        return saveString;
+    }
+
+    public Task createTaskFromString() {
+        Task saveTask = null;
+
+        return saveTask;
+    }
+
+    public static String historyToString(HistoryManager manager) {
+        String manager1 = "0";
+        return manager1;
+    }
+
+    public static List<Integer> historyFromString(String value) {
+        String value1 = "1";
+        return null;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public ArrayList<Task> getAllTasks() {

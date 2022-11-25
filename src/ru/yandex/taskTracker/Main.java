@@ -17,7 +17,8 @@ public class Main {
             System.out.println("\r\n//////////////////////////\r\n/////  Task Tracker  /////\r\n" +
                     "//////////////////////////");
 
-            System.out.println("\r\nЗапустить тестирование программы?\r\n1 - Да, 2 - Сохранить данные, 0 - Выйти из программы");
+            System.out.println("\r\n1 - Запустить тестирование программы\r\n2 - Сохранить данные" +
+                    "\r\n3 - Загрузить данные из сохранения принудительно\r\n0 - Выйти из программы");
             int commandMain = scannerIntMain.nextInt();
             switch (commandMain) {
                 case 1:
@@ -25,6 +26,9 @@ public class Main {
                     break;
                 case 2:
                     fileBacked.save();
+                    break;
+                case 3:
+                    //fileBacked.load("saveFilePath");
                     break;
                 case 0:
                     System.out.println("Выход из программы...");
