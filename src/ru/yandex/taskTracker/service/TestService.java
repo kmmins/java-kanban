@@ -13,7 +13,7 @@ public class TestService {
     private Scanner scanner = new Scanner(System.in);
 
     public void runTest() {
-        imOutOfHere:
+        outOfHere:
         while (true) {
             printTestMenu();
             int command = scanner.nextInt();
@@ -44,7 +44,7 @@ public class TestService {
                     break;
                 case 0:
                     System.out.println("Выход из меню...");
-                    break imOutOfHere;
+                    break outOfHere;
                 default:
                     System.out.println("Извините, такой команды пока нет");
             }
@@ -202,7 +202,7 @@ public class TestService {
 
     public void getSubTaskByEpic() {
         ArrayList<SubTask> output;
-        System.out.println("Для какой большой задачи нужно поулчить маленькие задачи? Введите ID: ");
+        System.out.println("Для какой большой задачи нужно получить маленькие задачи? Введите ID: ");
         int idEpicTask = scanner.nextInt();
         output = taskManager.getEpicSubTasks(taskManager.getEpicById(idEpicTask));
         System.out.println("Для большой задачи: " + taskManager.getEpicById(idEpicTask)
