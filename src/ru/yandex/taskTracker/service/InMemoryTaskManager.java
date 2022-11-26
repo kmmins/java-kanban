@@ -8,7 +8,7 @@ import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
 
-    private HistoryManager historyManager = Managers.getDefaultHistory();
+    protected HistoryManager historyManager = Managers.getDefaultHistory();
 
     private int taskCounterId = 0;
 

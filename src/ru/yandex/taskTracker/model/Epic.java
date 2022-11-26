@@ -7,14 +7,27 @@ public class Epic extends Task {
     private ArrayList<SubTask> relatedSubTasks;
 
     public Epic() {
-        super(TypeTask.EPIC);
     }
 
     public Epic(int id, String name, String description, TaskStatus status, ArrayList<SubTask> relatedSubTasks) {
-        super(id, name, description, status, TypeTask.EPIC);
+        super(id, name, description, status);
         this.relatedSubTasks = relatedSubTasks;
     }
+
     public ArrayList<SubTask> getRelatedSubTasks() {
         return relatedSubTasks;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stBuilder = new StringBuilder();
+
+        stBuilder.append(getId()).append(",");
+        stBuilder.append(TypeTask.EPIC).append(",");
+        stBuilder.append(getName()).append(",");
+        stBuilder.append(getStatus()).append(",");
+        stBuilder.append(getDescription()).append(",");
+
+        return stBuilder.toString();
     }
 }

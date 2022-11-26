@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 public class FileBackedTasksManager extends InMemoryTaskManager implements TaskManager {
@@ -130,16 +129,22 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
             fileWriter.write("id,type,name,status,description,epic\r\n");
 
             for (Task element : getAllTasks()) {
-                fileWriter.write(taskToString(element));
+                fileWriter.write(element.toString());
+                fileWriter.write("\r\n");
             }
 
             for (SubTask element : getAllSubTasks()) {
-                fileWriter.write(taskToString(element));
+                fileWriter.write(element.toString());
+                fileWriter.write("\r\n");
             }
 
             for (Epic element : getAllEpics()) {
-                fileWriter.write(taskToString(element));
+                fileWriter.write(element.toString());
+                fileWriter.write("\r\n");
             }
+
+            fileWriter.write("\r\n");
+            fileWriter.write(historyToString(historyManager));
 
         } catch (
                 IOException e) {
@@ -155,28 +160,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public String taskToString(Task task) {
-
-        StringBuilder stBuilder = new StringBuilder();
-
-        stBuilder.append(task.getId()).append(",");
-        if (task.getType().equals(TypeTask.TASK)) {
-            stBuilder.append(TypeTask.TASK).append(",");
-        } else if (task.getType().equals(TypeTask.SUBTASK)) {
-            stBuilder.append(TypeTask.SUBTASK).append(",");
-        } else if (task.getType().equals(TypeTask.EPIC)) {
-            stBuilder.append(TypeTask.EPIC).append(",");
-        }
-        stBuilder.append(task.getName()).append(",");
-        stBuilder.append(task.getStatus()).append(",");
-        stBuilder.append(task.getDescription()).append(",");
-        if (task.getType().equals(TypeTask.SUBTASK)) {
-            stBuilder.append(  ((SubTask)task).getEpicId()  ); // приведение к типу SubTask
-        }
-        stBuilder.append("\r\n");
-
-        return stBuilder.toString();
-    }
 
     public Task taskFromString() {
         Task saveTask = null;
@@ -185,11 +168,17 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     }
 
     public static String historyToString(HistoryManager manager) {
+        List<Task> name = manager.getHistoryName();
+        StringBuilder sb = new StringBuilder();
 
+        for (Task element : name) {
+            sb.append(element.getId()).append(",");
+        }
+        if (!name.isEmpty()) {
+            sb.deleteCharAt(sb.length() - 1);
+        }
 
-
-        String manager1 = "0";
-        return manager1;
+        return sb.toString();
     }
 
     public static List<Integer> historyFromString(String value) {
