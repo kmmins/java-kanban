@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class TestService {
 
-    private TaskManager taskManager = Managers.getDefault();
+    private TaskManager taskManager = Managers.getFileBacked();
 
     private Scanner scanner = new Scanner(System.in);
 
