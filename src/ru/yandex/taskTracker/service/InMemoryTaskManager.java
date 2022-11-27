@@ -10,11 +10,11 @@ public class InMemoryTaskManager implements TaskManager {
 
     protected HistoryManager historyManager = Managers.getDefaultHistory();
 
-    private int taskCounterId = 0;
+    protected int taskCounterId = 0;
 
-    private HashMap<Integer, Task> taskData = new HashMap<>();
-    private HashMap<Integer, SubTask> subTaskData = new HashMap<>();
-    private HashMap<Integer, Epic> epicData = new HashMap<>();
+    protected HashMap<Integer, Task> taskData = new HashMap<>();
+    protected HashMap<Integer, SubTask> subTaskData = new HashMap<>();
+    protected HashMap<Integer, Epic> epicData = new HashMap<>();
 
     @Override
     public ArrayList<Task> getAllTasks() {
@@ -149,7 +149,7 @@ public class InMemoryTaskManager implements TaskManager {
         return epicSubTasks;
     }
 
-    private TaskStatus evaluateEpicStatus(Epic task) {
+    protected TaskStatus evaluateEpicStatus(Epic task) {
         int newCount = 0;
         int doneCount = 0;
         ArrayList<SubTask> epicSubTasks = getEpicSubTasks(task);
@@ -170,7 +170,7 @@ public class InMemoryTaskManager implements TaskManager {
         return TaskStatus.IN_PROGRESS;
     }
 
-    private void updateEpicStatus(Epic task) {
+    protected void updateEpicStatus(Epic task) {
         task.setStatus(evaluateEpicStatus(task));
     }
 

@@ -1,5 +1,7 @@
 package ru.yandex.taskTracker.service;
 
+import java.nio.file.Paths;
+
 public class Managers  {
 
     public static TaskManager getDefault() {
@@ -7,7 +9,7 @@ public class Managers  {
     }
 
     public static TaskManager getFileBacked(){
-        return new FileBackedTasksManager();
+        return FileBackedTasksManager.loadFromFile(Paths.get(".resources\\autosave.csv").toFile());
     }
 
     public static HistoryManager getDefaultHistory() {

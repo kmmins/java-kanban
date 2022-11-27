@@ -2,10 +2,7 @@ package ru.yandex.taskTracker.service;
 
 import ru.yandex.taskTracker.model.*;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -13,6 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FileBackedTasksManager extends InMemoryTaskManager implements TaskManager {
+
+    String saveFileName;
+
+    public FileBackedTasksManager(String saveFileName) {
+        this.saveFileName = saveFileName;
+    }
 
     @Override
     public void deleteAllTasks() {
@@ -109,8 +112,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
     public void save() {
 
-        Path saveDirPath = Path.of(".resources");
-        Path saveFilePath = Paths.get(".resources\\autosave.csv");
+
+        Path saveFilePath = Paths.get(saveFileName);
+        Path saveDirPath = saveFilePath.getParent();
 
         if (!Files.exists((saveDirPath))) {
             try {
@@ -127,6 +131,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
             fileWriter.write("id,type,name,status,description,epic\r\n");
 
+            for (Epic element : getAllEpics()) {
+                fileWriter.write(element.toString());
+                fileWriter.write("\r\n");
+            }
             for (Task element : getAllTasks()) {
                 fileWriter.write(element.toString());
                 fileWriter.write("\r\n");
@@ -135,10 +143,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                 fileWriter.write(element.toString());
                 fileWriter.write("\r\n");
             }
-            for (Epic element : getAllEpics()) {
-                fileWriter.write(element.toString());
-                fileWriter.write("\r\n");
-            }
+
 
             fileWriter.write("\r\n");
             fileWriter.write(historyToString(historyManager));
@@ -152,7 +157,41 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
     public static FileBackedTasksManager loadFromFile(File file) {
 
-        return null;
+        FileBackedTasksManager result = new FileBackedTasksManager(file.getPath());
+
+        try (
+                FileReader reader = new FileReader(file);
+                BufferedReader fileReader = new BufferedReader(reader)
+        ) {
+            Boolean headerRead = false;
+            Boolean allTasksRead = false;
+            while (fileReader.ready()) {
+
+                String value = fileReader.readLine();
+                if (!headerRead) {
+                    headerRead = true;
+                    continue;
+                }
+
+                if (value.isEmpty()) {
+                    if (!allTasksRead) {
+                        allTasksRead = true;
+                        continue;
+                    }
+                }
+
+                if (!allTasksRead) {
+                    result.createTaskFromString(value);
+                } else {
+                    result.fillHistoryFromString(value);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Ошибка ввода-вывода");
+        }
+
+
+        return result;
     }
 
     public static String historyToString(HistoryManager manager) {
@@ -169,46 +208,56 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         return sb.toString();
     }
 
-    public Task taskFromString(String value) {
-        Task task = null;
+    public void createTaskFromString(String value) {
+        int epicId = 0;
+        String[] param = value.split(",");
 
-        String[] lines = value.split("\r?\n");
-
-        int epicId;
-        for (int i = 1; i < lines.length - 2; i++) { // отрезали пустую строку и строку истории
-            String line = lines[i];
-            String[] param = line.split(",");
-
-            int id = Integer.parseInt(param[0]);
-            TypeTask type = TypeTask.valueOf(param[1]);
-            String name = param[2];
-            TaskStatus status = TaskStatus.valueOf(param[3]);
-            String description = param[4];
-            if (param.length == 6) {
-                epicId = Integer.parseInt(param[5]);
-            } else epicId = -1;
-
-            task = new Task(id, name, description, status);
+        int id = Integer.parseInt(param[0]);
+        TypeTask type = TypeTask.valueOf(param[1]);
+        String name = param[2];
+        TaskStatus status = TaskStatus.valueOf(param[3]);
+        String description = param[4];
+        if (param.length == 6) {
+            epicId = Integer.parseInt(param[5]);
         }
 
-        return task;
+        if (taskCounterId < id) {
+            taskCounterId = id;
+        }
+
+        if (type.equals(TypeTask.TASK)) {
+
+            taskData.put(id, new Task(id, name, description, status));
+
+        } else if (type.equals(TypeTask.SUBTASK)) {
+
+            SubTask newSbT = new SubTask(id, name, description, status, epicId);
+            subTaskData.put(id, newSbT);
+            Epic eSbT = epicData.get(newSbT.getEpicId());
+            eSbT.getRelatedSubTasks().add(newSbT);
+            updateEpicStatus(eSbT);
+
+        } else if (type.equals(TypeTask.EPIC)) {
+
+            epicData.put(id, new Epic(id, name, description, status, new ArrayList<>()));
+        }
     }
 
-    public static List<Integer> historyFromString(String value) {
+    public void fillHistoryFromString(String value) {
 
-        List<Integer> historyFromString = new ArrayList<>();
-
-        String[] lines = value.split("\r?\n");
-        String lineHistory = lines[lines.length - 1];
-
-        String[] paramHistory = lineHistory.split(",");
-        for (String s : paramHistory) {
-            int ph = Integer.parseInt(s);
-            historyFromString.add(ph);
+        String[] paramHistory = value.split(",");
+        for (String element : paramHistory) {
+            int id = Integer.parseInt(element);
+            if (taskData.containsKey(id)) {
+                Task task = taskData.get(id);
+                historyManager.appendHistory(task);
+            } else if (subTaskData.containsKey(id)) {
+                SubTask task = subTaskData.get(id);
+                historyManager.appendHistory(task);
+            } else if (epicData.containsKey(id)) {
+                Epic task = epicData.get(id);
+                historyManager.appendHistory(task);
+            }
         }
-
-        return historyFromString;
     }
 }
-
-
