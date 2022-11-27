@@ -20,14 +20,14 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        StringBuilder stBuilder = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
 
-        stBuilder.append(getId()).append(",");
-        stBuilder.append(TypeTask.EPIC).append(",");
-        stBuilder.append(getName()).append(",");
-        stBuilder.append(getStatus()).append(",");
-        stBuilder.append(getDescription()).append(",");
+        sb.append(getId()).append(",");
+        sb.append(TypeTask.EPIC).append(",");
+        sb.append(getName()).append(",");
+        sb.append(getStatus()).append(",");
+        sb.append(getDescription()).append(",");
 
-        return stBuilder.toString();
+        return sb.toString();
     }
 }

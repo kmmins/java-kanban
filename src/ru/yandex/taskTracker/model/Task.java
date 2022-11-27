@@ -47,14 +47,14 @@ public class Task {
 
     @Override
     public String toString() {
-        StringBuilder stBuilder = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
 
-        stBuilder.append(id).append(",");
-        stBuilder.append(TypeTask.TASK).append(",");
-        stBuilder.append(name).append(",");
-        stBuilder.append(status).append(",");
-        stBuilder.append(description).append(",");
+        sb.append(id).append(",");
+        sb.append(TypeTask.TASK).append(",");
+        sb.append(name).append(",");
+        sb.append(status).append(",");
+        sb.append(description).append(",");
 
-        return stBuilder.toString();
+        return sb.toString();
     }
 }

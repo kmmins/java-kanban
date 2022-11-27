@@ -19,15 +19,15 @@ public class SubTask extends Task {
 
     @Override
     public String toString() {
-        StringBuilder stBuilder = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
 
-        stBuilder.append(getId()).append(",");
-        stBuilder.append(TypeTask.SUBTASK).append(",");
-        stBuilder.append(getName()).append(",");
-        stBuilder.append(getStatus()).append(",");
-        stBuilder.append(getDescription()).append(",");
-        stBuilder.append((getEpicId()));
+        sb.append(getId()).append(",");
+        sb.append(TypeTask.SUBTASK).append(",");
+        sb.append(getName()).append(",");
+        sb.append(getStatus()).append(",");
+        sb.append(getDescription()).append(",");
+        sb.append((getEpicId()));
 
-        return stBuilder.toString();
+        return sb.toString();
     }
 }
