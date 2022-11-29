@@ -17,6 +17,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         this.saveFileName = saveFileName;
     }
 
+    /**
+     * <P> Метод сохраняет текущее состояние трекера задач в файл "autosave.csv"</>
+     */
     public void save() {
 
         Path saveFilePath = Paths.get(saveFileName);
@@ -51,14 +54,18 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
             fileWriter.write("\r\n");
             fileWriter.write(historyToString(historyManager));
 
-        } catch (
-                IOException e) {
-            System.out.println("Произошла неизвестная ошибка!");
+        } catch (IOException e) {
+            System.out.println("Произошла ошибка записи в файл: " + e.getMessage());
             e.printStackTrace();
         }
-        System.out.println("Сохранение...");
     }
 
+    /**
+     * <P> Метод считывает текущее состояние трекера из файла автосохранения.</>
+     *
+     * @param file содержащий текущее состояние программы - "autosave.csv"
+     * @return экземпляр класса FileBackedTasksManager
+     */
     public static FileBackedTasksManager loadFromFile(File file) {
 
         FileBackedTasksManager result = new FileBackedTasksManager(file.getPath());
@@ -88,8 +95,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                 }
             }
         } catch (IOException e) {
-            System.out.println("Ошибка ввода-вывода");
-            e.printStackTrace();
+            System.out.println("При первом запуске программы отсутствуют данные о состоянии трекера задач.\r\n" +
+                    "Отсутствует файл: " + e.getMessage());
         }
         return result;
     }
@@ -108,6 +115,11 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         return sb.toString();
     }
 
+    /**
+     * <P> Метод создает задачу соответствующего типа из данных, хранящихся в файле автосохранения.</>
+     *
+     * @param value строка считанная из файла "autosave.csv", содержащая данные добавленных в трекер задач
+     */
     public void createTaskFromString(String value) {
         int epicId = 0;
         String[] param = value.split(",");
@@ -121,7 +133,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
             epicId = Integer.parseInt(param[5]);
         }
 
-        if (taskCounterId < id) { // сохранить счетчик родительского класса
+        if (taskCounterId < id) { // позволяет сохранить сквозную нумерацию счетчика родительского класса
             taskCounterId = id;
         }
 
@@ -138,6 +150,11 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         }
     }
 
+    /**
+     * <P> Метод определяет по id тип задачи и передает ее в память программы для хранения истории.</>
+     *
+     * @param value строка содержащая id задач, отвечающая за хранения истории, считанная из файла "autosave.csv"
+     */
     public void fillHistoryFromString(String value) {
 
         String[] paramHistory = value.split(",");

@@ -3,6 +3,7 @@ package ru.yandex.taskTracker.service;
 import ru.yandex.taskTracker.model.Epic;
 import ru.yandex.taskTracker.model.SubTask;
 import ru.yandex.taskTracker.model.TaskStatus;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -68,26 +69,13 @@ public class TestService {
     }
 
     public void createTask() {
-        imOutOfHere:
+        outOfHere:
         while (true) {
-            System.out.println("1 - создать маленькую задачи\r\n2 - создать большую задачу\r\n0 - Вернутся назад");
+            System.out.println("1 - создать большую задачу\r\n2 - создать маленькую задачу\r\n0 - Вернутся назад");
             int command;
             command = scanner.nextInt();
             switch (command) {
                 case 1:
-                    System.out.println("К какой большой задаче относиться создаваемая маленькая задача? Введите ID: ");
-                    SubTask subTask = new SubTask(scanner.nextInt());
-                    scanner.nextLine();
-                    System.out.println("Введите имя маленькой задачи: ");
-                    subTask.setName(scanner.nextLine());
-                    System.out.println("Введите описание маленькой задачи: ");
-                    subTask.setDescription(scanner.nextLine());
-
-                    taskManager.createSubTask(subTask);
-                    System.out.println("Создана маленькая задача: имя " + subTask.getName() + ", описание: "
-                            + subTask.getDescription() + ", статус: " + subTask.getStatus());
-                    break;
-                case 2:
                     Epic epicTask = new Epic();
                     System.out.println("Введите имя большой задачи: ");
                     scanner.nextLine();
@@ -100,9 +88,28 @@ public class TestService {
                     System.out.println("Создана большая задача: " + epicTask.getName()
                             + ", описание: " + epicTask.getDescription() + ", статус: " + epicTask.getStatus());
                     break;
+                case 2:
+                    try {
+                        System.out.println("К какой большой задаче относиться создаваемая маленькая задача? Введите ID: ");
+                        SubTask subTask = new SubTask(scanner.nextInt());
+                        scanner.nextLine();
+                        System.out.println("Введите имя маленькой задачи: ");
+                        subTask.setName(scanner.nextLine());
+                        System.out.println("Введите описание маленькой задачи: ");
+                        subTask.setDescription(scanner.nextLine());
+
+                        taskManager.createSubTask(subTask);
+                        System.out.println("Создана маленькая задача: имя " + subTask.getName() + ", описание: "
+                                + subTask.getDescription() + ", статус: " + subTask.getStatus());
+                        break;
+                    } catch (NullPointerException e) {
+                        System.out.println("Ошибка! Такую задачу невозможно создать.\r\n" +
+                                "Маленькая задача обязательно должна быть частью большой задачи!");
+                        continue;
+                    }
                 case 0:
                     System.out.println("Выход из меню...");
-                    break imOutOfHere;
+                    break outOfHere;
                 default:
                     System.out.println("Извините, такой команды пока нет");
                     break;
@@ -155,22 +162,32 @@ public class TestService {
     public void delTask() {
         imOutOfHere:
         while (true) {
-            System.out.println("1 - удалить маленькую задачу\r\n2 - удалить большую задачу\r\n0 - Вернутся назад");
+            System.out.println("1 - удалить большую задачу\r\n2 - удалить маленькую задачу\r\n0 - Вернутся назад");
             int command;
             command = scanner.nextInt();
             switch (command) {
                 case 1:
-                    System.out.println("Какую маленькую задачу удалить? Введите ID: ");
-                    int idSubTask = scanner.nextInt();
-                    taskManager.deleteSubTaskById(idSubTask);
-                    break;
+                    try {
+                        System.out.println("Какую большую задачу удалить? Введите ID: ");
+                        int idEpicTask = scanner.nextInt();
+                        taskManager.deleteEpicById(idEpicTask);
+                        break;
+                    } catch (NullPointerException e) {
+                        System.out.println("Ошибка! Нет такого id большой задачи");
+                        continue;
+                    }
                 case 2:
-                    System.out.println("Какуой большую задачу удалить? Введите ID: ");
-                    int idEpicTask = scanner.nextInt();
-                    taskManager.deleteEpicById(idEpicTask);
-                    break;
+                    try {
+                        System.out.println("Какую маленькую задачу удалить? Введите ID: ");
+                        int idSubTask = scanner.nextInt();
+                        taskManager.deleteSubTaskById(idSubTask);
+                        break;
+                    } catch (NullPointerException e) {
+                        System.out.println("Ошибка! Нет такого id маленькой задачи");
+                        continue;
+                    }
                 case 0:
-                    System.out.println("Выход...");
+                    System.out.println("Выход из меню...");
                     break imOutOfHere;
                 default:
                     System.out.println("Извините, такой команды пока нет");
@@ -180,23 +197,42 @@ public class TestService {
     }
 
     public void getById() {
-        System.out.println("Какую задачу нужно получить?\r\n1 - маленькую\r\n2 - большую");
-        int smallOrBig = scanner.nextInt();
-        System.out.println("Введите ID: ");
-        int iDsmallOrBig = scanner.nextInt();
+        imOutOfHere:
+        while (true) {
+            System.out.println("Какую задачу нужно получить?\r\n1 - Большую\r\n2 - Маленькую\r\n0 - Вернутся назад");
+            int command = scanner.nextInt();
 
-        switch (smallOrBig) {
-            case 1:
-                System.out.println("Маленькие задачи: ");
-                System.out.println(taskManager.getSubTaskById(iDsmallOrBig));
-                break;
-            case 2:
-                System.out.println("Большие задачи: ");
-                System.out.println(taskManager.getEpicById(iDsmallOrBig));
-                break;
-            default:
-                System.out.println("Извините, такой команды пока нет");
-                break;
+            switch (command) {
+                case 1:
+                    try {
+                        System.out.println("Введите id: ");
+                        int idSmallOrBig = scanner.nextInt();
+                        System.out.println("Большие задачи: ");
+                        System.out.println(taskManager.getEpicById(idSmallOrBig));
+                        break;
+                    } catch (NullPointerException e) {
+                        System.out.println("Ошибка! Нет такого id большой задачи");
+                    }
+                    continue;
+                case 2:
+                    try {
+                        System.out.println("Введите id: ");
+                        int idSmallOrBig = scanner.nextInt();
+                        System.out.println("Маленькие задачи: ");
+                        System.out.println(taskManager.getSubTaskById(idSmallOrBig));
+                        break;
+                    } catch (NullPointerException e) {
+                        System.out.println("Ошибка! Нет такого id маленькой задачи");
+                    }
+                    continue;
+                case 0:
+                    System.out.println("Выход из меню...");
+                    break imOutOfHere;
+                default:
+                    System.out.println("Извините, такой команды пока нет");
+                    break;
+
+            }
         }
     }
 
@@ -209,8 +245,8 @@ public class TestService {
                 + " Получены маленькие задачи :" + output);
     }
 
-    public void getH(){
-        System.out.println("История задач: " +  taskManager.getHistoryName() + " храниться тут");
+    public void getH() {
+        System.out.println("История задач: " + taskManager.getHistoryName() + " храниться тут");
     }
 
     public static void printTestMenu() {
