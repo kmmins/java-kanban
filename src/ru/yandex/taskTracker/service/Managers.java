@@ -17,7 +17,9 @@ public class Managers  {
      * @return возвращает реализацию работы программы с хранением в специальном файле
      */
     public static TaskManager getFileBacked() throws ManagerSaveException {
+
         return FileBackedTasksManager.loadFromFile(Paths.get(".resources\\autosave.csv").toFile());
+
     }
 
     /** <p> Выбор текущей реализации отслеживания истории.</>

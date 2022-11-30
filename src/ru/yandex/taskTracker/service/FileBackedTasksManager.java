@@ -36,22 +36,23 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                 FileWriter writer = new FileWriter(saveFilePath.toFile());
                 BufferedWriter fileWriter = new BufferedWriter(writer)) {
 
-            fileWriter.write("id,type,name,status,description,epic\r\n");
+            fileWriter.write(CSVTaskFormat.getHeader());
+            fileWriter.write("\r\n");
 
             for (Epic element : getAllEpics()) {
-                fileWriter.write(element.toString());
+                fileWriter.write(CSVTaskFormat.epicToString(element));
                 fileWriter.write("\r\n");
             }
             for (Task element : getAllTasks()) {
-                fileWriter.write(element.toString());
+                fileWriter.write(CSVTaskFormat.taskToString(element));
                 fileWriter.write("\r\n");
             }
             for (SubTask element : getAllSubTasks()) {
-                fileWriter.write(element.toString());
+                fileWriter.write(CSVTaskFormat.subToString(element));
                 fileWriter.write("\r\n");
             }
             fileWriter.write("\r\n");
-            fileWriter.write(historyToString(historyManager));
+            fileWriter.write(CSVTaskFormat.historyToString(historyManager));
         } catch (IOException e) {
             throw new ManagerSaveException("Произошла ошибка при записи в файл: " + e.getMessage());
         }
@@ -66,7 +67,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     public static FileBackedTasksManager loadFromFile(File file) throws ManagerSaveException {
 
         FileBackedTasksManager result = new FileBackedTasksManager(file.getPath());
-        if(!Files.exists(file.toPath())) {
+
+        if (!Files.exists(file.toPath())) {
             result.save();
         }
         try (
@@ -101,56 +103,27 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     }
 
     /**
-     * <P> Метод преобразует в строку данные об истории вызовов, хранящейся в памяти.</>
-     *
-     * @param manager возвращающий кастомный список истории вызовов задач
-     * @return строку с id задач из истории хранящейся в памяти
-     */
-    public static String historyToString(HistoryManager manager) {
-        List<Task> name = manager.getHistoryName();
-        StringBuilder sb = new StringBuilder();
-
-        for (Task element : name) {
-            sb.append(element.getId()).append(",");
-        }
-        if (!name.isEmpty()) {
-            sb.deleteCharAt(sb.length() - 1);
-        }
-        return sb.toString();
-    }
-
-    /**
      * <P> Метод создает задачу соответствующего типа из данных, хранящихся в файле автосохранения.</>
      *
      * @param value строка считанная из файла "autosave.csv", содержащая данные добавленных в трекер задач
      */
     public void createTaskFromString(String value) {
-        int epicId = 0;
-        String[] param = value.split(",");
+        Task parseResult = CSVTaskFormat.parseTask(value);
 
-        int id = Integer.parseInt(param[0]);
-        TypeTask type = TypeTask.valueOf(param[1]);
-        String name = param[2];
-        TaskStatus status = TaskStatus.valueOf(param[3]);
-        String description = param[4];
-        if (param.length == 6) {
-            epicId = Integer.parseInt(param[5]);
+        if (taskCounterId < parseResult.getId()) { // позволяет сохранить сквозную нумерацию счетчика родительского класса
+            taskCounterId = parseResult.getId();
         }
 
-        if (taskCounterId < id) { // позволяет сохранить сквозную нумерацию счетчика родительского класса
-            taskCounterId = id;
-        }
-
-        if (type.equals(TypeTask.TASK)) {
-            taskData.put(id, new Task(id, name, description, status));
-        } else if (type.equals(TypeTask.SUBTASK)) {
-            SubTask newSbT = new SubTask(id, name, description, status, epicId);
-            subTaskData.put(id, newSbT);
+        if (parseResult instanceof Epic) {
+            epicData.put(parseResult.getId(), (Epic) parseResult);
+        } else if (parseResult instanceof SubTask) {
+            SubTask newSbT = (SubTask) parseResult;
+            subTaskData.put(parseResult.getId(), newSbT);
             Epic eSbT = epicData.get(newSbT.getEpicId());
             eSbT.getRelatedSubTasks().add(newSbT);
             updateEpicStatus(eSbT);
-        } else if (type.equals(TypeTask.EPIC)) {
-            epicData.put(id, new Epic(id, name, description, status, new ArrayList<>()));
+        } else {
+            taskData.put(parseResult.getId(), parseResult);
         }
     }
 
@@ -160,10 +133,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
      * @param value строка содержащая id задач, отвечающая за хранения истории, считанная из файла "autosave.csv"
      */
     public void fillHistoryFromString(String value) {
-
-        String[] paramHistory = value.split(",");
-        for (String element : paramHistory) {
-            int id = Integer.parseInt(element);
+        List<Integer> fillId = CSVTaskFormat.parseHistory(value);
+        for (int id : fillId) {
             if (taskData.containsKey(id)) {
                 Task task = taskData.get(id);
                 historyManager.appendHistory(task);

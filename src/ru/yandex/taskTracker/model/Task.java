@@ -1,5 +1,7 @@
 package ru.yandex.taskTracker.model;
 
+import ru.yandex.taskTracker.service.CSVTaskFormat;
+
 public class Task {
     private int id;
     private String name;
@@ -46,14 +48,6 @@ public class Task {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-
-        sb.append(id).append(",");
-        sb.append(TypeTask.TASK).append(",");
-        sb.append(name).append(",");
-        sb.append(status).append(",");
-        sb.append(description).append(",");
-
-        return sb.toString();
+        return CSVTaskFormat.taskToString(this);
     }
 }
