@@ -1,7 +1,5 @@
 package ru.yandex.taskTracker.model;
 
-import ru.yandex.taskTracker.service.CSVTaskFormat;
-
 public class SubTask extends Task {
 
     private int epicId;
@@ -17,10 +15,5 @@ public class SubTask extends Task {
 
     public int getEpicId() {
         return epicId;
-    }
-
-    @Override
-    public String toString() {
-        return CSVTaskFormat.subToString(this);
     }
 }

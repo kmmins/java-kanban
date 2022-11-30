@@ -1,7 +1,5 @@
 package ru.yandex.taskTracker.model;
 
-import ru.yandex.taskTracker.service.CSVTaskFormat;
-
 import java.util.ArrayList;
 
 public class Epic extends Task {
@@ -18,10 +16,5 @@ public class Epic extends Task {
 
     public ArrayList<SubTask> getRelatedSubTasks() {
         return relatedSubTasks;
-    }
-
-    @Override
-    public String toString() {
-        return CSVTaskFormat.epicToString(this);
     }
 }

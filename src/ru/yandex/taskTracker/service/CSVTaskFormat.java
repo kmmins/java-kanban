@@ -26,6 +26,12 @@ public class CSVTaskFormat extends InMemoryTaskManager implements TaskManager {
         return sb.toString();
     }
 
+    /**
+     * <P> Метод производит сбор параметров задачи из строки.</>
+     *
+     * @param value строка содержащая задачу считанная из файла "autosave.csv"
+     * @return задачу соответствущего типа
+     */
     public static Task parseTask(String value) {
 
         int epicId = 0;
@@ -51,6 +57,12 @@ public class CSVTaskFormat extends InMemoryTaskManager implements TaskManager {
         }
     }
 
+    /**
+     * <P> Метод собирает id задач хранящихся в истории.</>
+     *
+     * @param value строка содержащая id задач хранящихся в истории
+     * @return список id задач из истории
+     */
     public static List<Integer> parseHistory(String value) {
         String[] paramHistory = value.split(",");
         List<Integer> idResult = new ArrayList<>();
@@ -60,6 +72,12 @@ public class CSVTaskFormat extends InMemoryTaskManager implements TaskManager {
         return idResult;
     }
 
+    /**
+     * <P> Метод собирает строку из параметров задачи соответствующего типа</>
+     *
+     * @param task соответствующего типа
+     * @return собранную строку
+     */
     public static String taskToString(Task task) {
         StringBuilder sb = new StringBuilder();
 
@@ -72,6 +90,12 @@ public class CSVTaskFormat extends InMemoryTaskManager implements TaskManager {
         return sb.toString();
     }
 
+    /**
+     * <P> Метод собирает строку из параметров задачи соответствующего типа</>
+     *
+     * @param task соответствующего типа
+     * @return собранную строку
+     */
     public static String subToString(SubTask task) {
         StringBuilder sb = new StringBuilder();
 
@@ -85,6 +109,12 @@ public class CSVTaskFormat extends InMemoryTaskManager implements TaskManager {
         return sb.toString();
     }
 
+    /**
+     * <P> Метод собирает строку из параметров задачи соответствующего типа</>
+     *
+     * @param task соответствующего типа
+     * @return собранную строку
+     */
     public static String epicToString(Epic task) {
         StringBuilder sb = new StringBuilder();
 
@@ -97,6 +127,11 @@ public class CSVTaskFormat extends InMemoryTaskManager implements TaskManager {
         return sb.toString();
     }
 
+    /**
+     * <P> Заголовок для CSV-файла.</>
+     *
+     * @return первую строку для autosave.csv
+     */
     public static String getHeader() {
         return "id,type,name,status,description,epic";
     }
