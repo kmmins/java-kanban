@@ -11,7 +11,7 @@ import java.util.List;
 
 public class FileBackedTasksManager extends InMemoryTaskManager implements TaskManager {
 
-    private String saveFileName;
+    private final String saveFileName;
 
     public FileBackedTasksManager(String saveFileName) {
         this.saveFileName = saveFileName;
@@ -20,7 +20,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     /**
      * <P> Метод сохраняет текущее состояние трекера задач в файл "autosave.csv"</>
      */
-    public void save() {
+    public void save() throws ManagerSaveException {
 
         Path saveFilePath = Paths.get(saveFileName);
         Path saveDirPath = saveFilePath.getParent();
@@ -29,8 +29,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
             try {
                 Files.createDirectory(saveDirPath);
             } catch (IOException e) {
-                System.out.println("Произошла ошибка при создании файла/директории: " + e.getMessage());
-                e.printStackTrace();
+                throw new ManagerSaveException("Произошла ошибка при создании директории: " + e.getMessage());
             }
         }
         try (
@@ -53,10 +52,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
             }
             fileWriter.write("\r\n");
             fileWriter.write(historyToString(historyManager));
-
         } catch (IOException e) {
-            System.out.println("Произошла ошибка записи в файл: " + e.getMessage());
-            e.printStackTrace();
+            throw new ManagerSaveException("Произошла ошибка при записи в файл: " + e.getMessage());
         }
     }
 
@@ -66,10 +63,12 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
      * @param file содержащий текущее состояние программы - "autosave.csv"
      * @return экземпляр класса FileBackedTasksManager
      */
-    public static FileBackedTasksManager loadFromFile(File file) {
+    public static FileBackedTasksManager loadFromFile(File file) throws ManagerSaveException {
 
         FileBackedTasksManager result = new FileBackedTasksManager(file.getPath());
-
+        if(!Files.exists(file.toPath())) {
+            result.save();
+        }
         try (
                 FileReader reader = new FileReader(file);
                 BufferedReader fileReader = new BufferedReader(reader)
@@ -95,12 +94,18 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                 }
             }
         } catch (IOException e) {
-            System.out.println("При первом запуске программы отсутствуют данные о состоянии трекера задач.\r\n" +
-                    "Отсутствует файл: " + e.getMessage());
+            throw new ManagerSaveException("Отсутствуют данные о состоянии трекера задач.\r\n" +
+                    "Не найден файл автосохранения: " + e.getMessage());
         }
         return result;
     }
 
+    /**
+     * <P> Метод преобразует в строку данные об истории вызовов, хранящейся в памяти.</>
+     *
+     * @param manager возвращающий кастомный список истории вызовов задач
+     * @return строку с id задач из истории хранящейся в памяти
+     */
     public static String historyToString(HistoryManager manager) {
         List<Task> name = manager.getHistoryName();
         StringBuilder sb = new StringBuilder();
@@ -111,7 +116,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         if (!name.isEmpty()) {
             sb.deleteCharAt(sb.length() - 1);
         }
-
         return sb.toString();
     }
 

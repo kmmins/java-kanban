@@ -13,6 +13,9 @@ public class TestService {
 
     private Scanner scanner = new Scanner(System.in);
 
+    public TestService() throws ManagerSaveException {
+    }
+
     public void runTest() {
         outOfHere:
         while (true) {

@@ -1,12 +1,13 @@
 package ru.yandex.taskTracker;
 
+import ru.yandex.taskTracker.service.ManagerSaveException;
 import ru.yandex.taskTracker.service.TestService;
 
 import java.util.Scanner;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ManagerSaveException {
         Scanner scannerIntMain = new Scanner(System.in);
         TestService testService = new TestService();
 

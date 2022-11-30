@@ -44,7 +44,6 @@ public class Task {
         this.status = status;
     }
 
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
