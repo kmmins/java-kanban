@@ -2,15 +2,18 @@ package ru.yandex.taskTracker.service;
 
 import ru.yandex.taskTracker.model.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
 
     protected HistoryManager historyManager = Managers.getDefaultHistory();
 
     protected int taskCounterId = 0;
+
+    protected Set<Task> sortedTasks;
+
 
     protected HashMap<Integer, Task> taskData = new HashMap<>();
     protected HashMap<Integer, SubTask> subTaskData = new HashMap<>();
@@ -34,11 +37,13 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteAllTasks() {
         taskData.clear();
+        sortMethod();
     }
 
     @Override
     public void deleteAllSubTasks() {
         subTaskData.clear();
+        sortMethod();
     }
 
     @Override
@@ -71,20 +76,23 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void createTask(Task task) {
         taskCounterId += 1;
-        taskData.put(taskCounterId, new Task(taskCounterId, task.getName(), task.getDescription(), task.getStatus()));
+        taskData.put(taskCounterId, new Task(taskCounterId, task.getName(), task.getDescription(), task.getStatus(),
+                task.getStartTime(), task.getDuration()));
+        sortMethod();
     }
 
     @Override
     public void createSubTask(SubTask task) {
         taskCounterId += 1;
         SubTask newSbT = new SubTask(taskCounterId, task.getName(), task.getDescription(),
-                task.getStatus(), task.getEpicId());
+                task.getStatus(), task.getEpicId(), task.getStartTime(), task.getDuration());
 
         subTaskData.put(taskCounterId, newSbT);
 
         Epic eSbT = epicData.get(newSbT.getEpicId());
         eSbT.getRelatedSubTasks().add(newSbT);
-        updateEpicStatus(eSbT);
+        updateEpicData(eSbT);
+        sortMethod();
     }
 
     @Override
@@ -97,12 +105,14 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateTask(Task task) {
         taskData.put(task.getId(), task);
+        sortMethod();
     }
 
     @Override
     public void updateSubTask(SubTask task) {
         subTaskData.put(task.getId(), task);
-        updateEpicStatus(epicData.get(task.getEpicId()));
+        updateEpicData(epicData.get(task.getEpicId()));
+        sortMethod();
     }
 
     @Override
@@ -114,6 +124,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteTaskById(int id) {
         taskData.remove(id);
         historyManager.remove(id);
+        sortMethod();
     }
 
     @Override
@@ -124,8 +135,9 @@ public class InMemoryTaskManager implements TaskManager {
 
         Epic someEpicTask = epicData.get(someSubTask.getEpicId());
         someEpicTask.getRelatedSubTasks().remove(someSubTask);
-        updateEpicStatus(someEpicTask);
+        updateEpicData(someEpicTask);
         historyManager.remove(id);
+        sortMethod();
     }
 
     @Override
@@ -149,6 +161,11 @@ public class InMemoryTaskManager implements TaskManager {
         return epicSubTasks;
     }
 
+    @Override
+    public List<Task> getHistoryName() {
+        return historyManager.getHistoryName();
+    }
+
     protected TaskStatus evaluateEpicStatus(Epic task) {
         int newCount = 0;
         int doneCount = 0;
@@ -170,12 +187,73 @@ public class InMemoryTaskManager implements TaskManager {
         return TaskStatus.IN_PROGRESS;
     }
 
-    protected void updateEpicStatus(Epic task) {
-        task.setStatus(evaluateEpicStatus(task));
+    protected LocalDateTime findEpicStartTime(Epic task) {
+        ArrayList<SubTask> subTasksEpic = getEpicSubTasks(task);
+        LocalDateTime min = null;
+
+        for (SubTask element : subTasksEpic) {
+            if (min == null || element.getStartTime().isBefore(min)) {
+                min = element.getStartTime();
+            }
+        }
+        return min;
     }
 
-    @Override
-    public List<Task> getHistoryName() {
-        return historyManager.getHistoryName();
+    protected LocalDateTime findEpicEndTime(Epic task) {
+        ArrayList<SubTask> subTasksEpic = getEpicSubTasks(task);
+        LocalDateTime max = null;
+
+        for (SubTask element : subTasksEpic) {
+            if (max == null || element.getEndTime().isAfter(max)) {
+                max = element.getEndTime();
+            }
+        }
+        return max;
+    }
+
+    protected Duration findEpicDuration(Epic task) {
+        ArrayList<SubTask> subTasksEpic = getEpicSubTasks(task);
+        Duration sum = Duration.ofMinutes(0);
+
+        for (SubTask element : subTasksEpic) {
+            sum = sum.plus(element.getDuration());
+        }
+        return sum;
+    }
+
+    protected void updateEpicData(Epic task) {
+        task.setStatus(evaluateEpicStatus(task));
+        task.setStartTime(findEpicStartTime(task));
+        task.setDuration(findEpicDuration(task));
+        task.setEndTime(findEpicEndTime(task));
+    }
+
+    protected void sortMethod() {
+        ArrayList<Task> atask = getAllTasks();
+        ArrayList<SubTask> asubtask = getAllSubTasks();
+
+        Comparator<Task> sortByStartTime = new Comparator<>() {
+            @Override
+            public int compare(Task task1, Task task2) {
+                if (task1.getStartTime() != null && task2.getStartTime() != null) {
+                    return task1.getStartTime().compareTo(task2.getStartTime());
+
+                } else if (task1.getStartTime() != null && task2.getStartTime() == null) {
+                    return -1;
+
+                } else if (task1.getStartTime() == null && task2.getStartTime() != null) {
+                    return 1;
+                } return 0;
+            }
+        };
+        sortedTasks = new TreeSet<>(sortByStartTime);
+        sortedTasks.addAll(atask);
+        sortedTasks.addAll(asubtask);
+    }
+
+    public ArrayList<Task> getPrioritizedTasks() {
+        ArrayList<Task> result = new ArrayList<>(sortedTasks);
+
+        return result;
     }
 }

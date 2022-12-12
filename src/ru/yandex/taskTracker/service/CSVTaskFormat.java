@@ -2,10 +2,15 @@ package ru.yandex.taskTracker.service;
 
 import ru.yandex.taskTracker.model.*;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CSVTaskFormat extends InMemoryTaskManager implements TaskManager {
+
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     /**
      * <P> Метод преобразует в строку данные об истории вызовов, хранящейся в памяти.</>
@@ -42,14 +47,19 @@ public class CSVTaskFormat extends InMemoryTaskManager implements TaskManager {
         String name = param[2];
         TaskStatus status = TaskStatus.valueOf(param[3]);
         String description = param[4];
-        if (param.length == 6) {
-            epicId = Integer.parseInt(param[5]);
+        LocalDateTime startTime = null;
+        if (!param[5].isEmpty()) {
+            startTime = LocalDateTime.parse(param[5], formatter);
+        }
+        Duration duration = Duration.ofMinutes(Long.parseLong(param[6]));
+        if (param.length == 8) {
+            epicId = Integer.parseInt(param[7]);
         }
 
         if (type.equals(TypeTask.TASK)) {
-            return new Task(id, name, description, status);
+            return new Task(id, name, description, status, startTime, duration);
         } else if (type.equals(TypeTask.SUBTASK)) {
-            return new SubTask(id, name, description, status, epicId);
+            return new SubTask(id, name, description, status, epicId, startTime, duration);
         } else if (type.equals(TypeTask.EPIC)) {
             return new Epic(id, name, description, status, new ArrayList<>());
         } else {
@@ -86,6 +96,8 @@ public class CSVTaskFormat extends InMemoryTaskManager implements TaskManager {
         sb.append(task.getName()).append(",");
         sb.append(task.getStatus()).append(",");
         sb.append(task.getDescription()).append(",");
+        sb.append(task.getStartTime().format(formatter)).append(",");
+        sb.append(task.getDuration().toMinutes()).append(",");
 
         return sb.toString();
     }
@@ -104,6 +116,8 @@ public class CSVTaskFormat extends InMemoryTaskManager implements TaskManager {
         sb.append(task.getName()).append(",");
         sb.append(task.getStatus()).append(",");
         sb.append(task.getDescription()).append(",");
+        sb.append(task.getStartTime().format(formatter)).append(",");
+        sb.append(task.getDuration().toMinutes()).append(",");
         sb.append((task.getEpicId()));
 
         return sb.toString();
@@ -123,6 +137,8 @@ public class CSVTaskFormat extends InMemoryTaskManager implements TaskManager {
         sb.append(task.getName()).append(",");
         sb.append(task.getStatus()).append(",");
         sb.append(task.getDescription()).append(",");
+        sb.append(",");
+        sb.append(task.getDuration().toMinutes()).append(",");
 
         return sb.toString();
     }
@@ -133,6 +149,6 @@ public class CSVTaskFormat extends InMemoryTaskManager implements TaskManager {
      * @return первую строку для autosave.csv
      */
     public static String getHeader() {
-        return "id,type,name,status,description,epic";
+        return "id,type,name,status,description,startTime,duration,epic";
     }
 }

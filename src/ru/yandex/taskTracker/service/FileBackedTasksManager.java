@@ -120,7 +120,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
             subTaskData.put(parseResult.getId(), newSbT);
             Epic eSbT = epicData.get(newSbT.getEpicId());
             eSbT.getRelatedSubTasks().add(newSbT);
-            updateEpicStatus(eSbT);
+            updateEpicData(eSbT);
         } else {
             taskData.put(parseResult.getId(), parseResult);
         }

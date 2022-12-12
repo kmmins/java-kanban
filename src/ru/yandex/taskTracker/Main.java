@@ -9,7 +9,6 @@ public class Main {
 
     public static void main(String[] args) throws ManagerSaveException {
         Scanner scannerIntMain = new Scanner(System.in);
-        TestService testService = new TestService();
 
         outOfHere:
         while (true) {
@@ -20,6 +19,7 @@ public class Main {
             int commandMain = scannerIntMain.nextInt();
             switch (commandMain) {
                 case 1:
+                    TestService testService = new TestService();
                     testService.runTest();
                     break;
                 case 0:

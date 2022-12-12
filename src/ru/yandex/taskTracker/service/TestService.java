@@ -4,10 +4,14 @@ import ru.yandex.taskTracker.model.Epic;
 import ru.yandex.taskTracker.model.SubTask;
 import ru.yandex.taskTracker.model.TaskStatus;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class TestService {
+    private static final DateTimeFormatter format = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     private TaskManager taskManager = Managers.getFileBacked();
 
@@ -100,6 +104,10 @@ public class TestService {
                         subTask.setName(scanner.nextLine());
                         System.out.println("Введите описание маленькой задачи: ");
                         subTask.setDescription(scanner.nextLine());
+                        System.out.println("Введите дату начала вида 'dd.MM.yyyy HH:mm': ");
+                        subTask.setStartTime(LocalDateTime.parse(scanner.nextLine(), format));
+                        System.out.println("Введите продолжительность задачи в мин: ");
+                        subTask.setDuration(Duration.ofMinutes(Integer.parseInt(scanner.nextLine())));
 
                         taskManager.createSubTask(subTask);
                         System.out.println("Создана маленькая задача: имя " + subTask.getName() + ", описание: "
