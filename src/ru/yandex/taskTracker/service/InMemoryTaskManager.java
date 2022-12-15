@@ -12,8 +12,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     protected int taskCounterId = 0;
 
-    protected Set<Task> sortedTasks;
-
+    private Set<Task> sortedTasks;
 
     protected HashMap<Integer, Task> taskData = new HashMap<>();
     protected HashMap<Integer, SubTask> subTaskData = new HashMap<>();
@@ -74,45 +73,55 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void createTask(Task task) {
+    public Task createTask(Task task) throws SameTimeTaskException {
         taskCounterId += 1;
-        taskData.put(taskCounterId, new Task(taskCounterId, task.getName(), task.getDescription(), task.getStatus(),
-                task.getStartTime(), task.getDuration()));
+        Task createdTask = new Task(taskCounterId, task.getName(), task.getDescription(), task.getStatus(),
+                task.getStartTime(), task.getDuration());
+        taskData.put(taskCounterId, createdTask);
         sortMethod();
+        validate();
+        return createdTask;
     }
 
     @Override
-    public void createSubTask(SubTask task) {
+    public SubTask createSubTask(SubTask task) throws SameTimeTaskException {
         taskCounterId += 1;
-        SubTask newSbT = new SubTask(taskCounterId, task.getName(), task.getDescription(),
+        SubTask createdSubTask = new SubTask(taskCounterId, task.getName(), task.getDescription(),
                 task.getStatus(), task.getEpicId(), task.getStartTime(), task.getDuration());
 
-        subTaskData.put(taskCounterId, newSbT);
+        subTaskData.put(taskCounterId, createdSubTask);
 
-        Epic eSbT = epicData.get(newSbT.getEpicId());
-        eSbT.getRelatedSubTasks().add(newSbT);
+        Epic eSbT = epicData.get(createdSubTask.getEpicId());
+        eSbT.getRelatedSubTasks().add(createdSubTask);
         updateEpicData(eSbT);
         sortMethod();
+        validate();
+
+        return createdSubTask;
     }
 
     @Override
-    public void createEpic(Epic task) {
+    public Epic createEpic(Epic task) {
         taskCounterId += 1;
-        epicData.put(taskCounterId, new Epic(taskCounterId, task.getName(), task.getDescription(),
-                evaluateEpicStatus(task), new ArrayList<>()));
+        Epic createdEpic = new Epic(taskCounterId, task.getName(), task.getDescription(),
+                evaluateEpicStatus(task), new ArrayList<>());
+        epicData.put(taskCounterId, createdEpic);
+        return createdEpic;
     }
 
     @Override
-    public void updateTask(Task task) {
+    public void updateTask(Task task) throws SameTimeTaskException {
         taskData.put(task.getId(), task);
         sortMethod();
+        validate();
     }
 
     @Override
-    public void updateSubTask(SubTask task) {
+    public void updateSubTask(SubTask task) throws SameTimeTaskException {
         subTaskData.put(task.getId(), task);
         updateEpicData(epicData.get(task.getEpicId()));
         sortMethod();
+        validate();
     }
 
     @Override
@@ -232,28 +241,38 @@ public class InMemoryTaskManager implements TaskManager {
         ArrayList<Task> atask = getAllTasks();
         ArrayList<SubTask> asubtask = getAllSubTasks();
 
-        Comparator<Task> sortByStartTime = new Comparator<>() {
-            @Override
-            public int compare(Task task1, Task task2) {
-                if (task1.getStartTime() != null && task2.getStartTime() != null) {
-                    return task1.getStartTime().compareTo(task2.getStartTime());
+        Comparator<Task> sortByStartTime = (task1, task2) -> {
+            if (task1.getStartTime() != null && task2.getStartTime() != null) {
+                return task1.getStartTime().compareTo(task2.getStartTime());
 
-                } else if (task1.getStartTime() != null && task2.getStartTime() == null) {
-                    return -1;
+            } else if (task1.getStartTime() != null && task2.getStartTime() == null) {
+                return -1;
 
-                } else if (task1.getStartTime() == null && task2.getStartTime() != null) {
-                    return 1;
-                } return 0;
+            } else if (task1.getStartTime() == null && task2.getStartTime() != null) {
+                return 1;
             }
+            return 0;
         };
         sortedTasks = new TreeSet<>(sortByStartTime);
         sortedTasks.addAll(atask);
         sortedTasks.addAll(asubtask);
     }
 
+    @Override
     public ArrayList<Task> getPrioritizedTasks() {
-        ArrayList<Task> result = new ArrayList<>(sortedTasks);
+        return new ArrayList<>(sortedTasks);
+    }
 
-        return result;
+    private void validate() throws SameTimeTaskException {
+        ArrayList<Task> priorTasks = getPrioritizedTasks();
+        int listSize = priorTasks.size();
+
+        for (int i = 0; i < listSize - 1; i++) {
+
+            if (priorTasks.get(i).getEndTime() != null && priorTasks.get(i + 1).getStartTime() != null &&
+                    priorTasks.get(i).getEndTime().isAfter(priorTasks.get(i + 1).getStartTime())) {
+                throw new SameTimeTaskException("Задачи пересекаются по времени выполнения.");
+            }
+        }
     }
 }

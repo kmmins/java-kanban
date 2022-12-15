@@ -121,8 +121,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
             Epic eSbT = epicData.get(newSbT.getEpicId());
             eSbT.getRelatedSubTasks().add(newSbT);
             updateEpicData(eSbT);
+            sortMethod();
         } else {
             taskData.put(parseResult.getId(), parseResult);
+            sortMethod();
         }
     }
 
@@ -187,31 +189,34 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     }
 
     @Override
-    public void createTask(Task task) {
-        super.createTask(task);
+    public Task createTask(Task task) throws SameTimeTaskException {
+        Task superCreatedTask = super.createTask(task);
         save();
+        return superCreatedTask;
     }
 
     @Override
-    public void createSubTask(SubTask task) {
-        super.createSubTask(task);
+    public SubTask createSubTask(SubTask task) throws SameTimeTaskException {
+        SubTask superCreatedSubTask = super.createSubTask(task);
         save();
+        return superCreatedSubTask;
     }
 
     @Override
-    public void createEpic(Epic task) {
-        super.createEpic(task);
+    public Epic createEpic(Epic task) {
+        Epic superEpic = super.createEpic(task);
         save();
+        return superEpic;
     }
 
     @Override
-    public void updateTask(Task task) {
+    public void updateTask(Task task) throws SameTimeTaskException {
         super.updateTask(task);
         save();
     }
 
     @Override
-    public void updateSubTask(SubTask task) {
+    public void updateSubTask(SubTask task) throws SameTimeTaskException {
         super.updateSubTask(task);
         save();
     }

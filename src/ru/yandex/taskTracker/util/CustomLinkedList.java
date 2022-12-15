@@ -72,7 +72,7 @@ public class CustomLinkedList {
     }
 
     /**
-     * <p>Узел, в связанном списке CustomLinkedList</p>
+     * <p>Узел, в связанном списке CustomLinkedList </p>
      *
      * @param <T> принимает объект типа Task
      */
