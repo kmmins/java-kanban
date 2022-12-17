@@ -19,7 +19,10 @@ public class FileBackedTasksManagerTests extends TaskManagerTest<FileBackedTasks
     @Test
     void checkLoadEmpty() {
         taskManager.save();
-        FileBackedTasksManager tmLoad = FileBackedTasksManager.loadFromFile(Paths.get(".resources\\test.tmp").toFile());
+        FileBackedTasksManager tmLoad = FileBackedTasksManager.loadFromFile(
+                Paths.get(".resources\\test.tmp").toFile()
+        );
+
         assertTrue(tmLoad.getAllTasks().isEmpty(), "Список задач не пустой");
     }
 
@@ -29,9 +32,12 @@ public class FileBackedTasksManagerTests extends TaskManagerTest<FileBackedTasks
         epic.setName("Эпик 1");
         epic.setDescription("Описание эпика 1");
         var cE1 = taskManager.createEpic(epic);
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         taskManager.save();
-        FileBackedTasksManager tmLoad = FileBackedTasksManager.loadFromFile(Paths.get(".resources\\test.tmp").toFile());
+        FileBackedTasksManager tmLoad = FileBackedTasksManager.loadFromFile(
+                Paths.get(".resources\\test.tmp").toFile()
+        );
+
         assertNotNull(tmLoad, "Эпики не возвращаются.");
         assertFalse(tmLoad.getAllEpics().isEmpty(), "Список эпиков пустой.");
         assertEquals(1, tmLoad.getAllEpics().size(), "Неверное количество эпиков.");
@@ -44,14 +50,17 @@ public class FileBackedTasksManagerTests extends TaskManagerTest<FileBackedTasks
         epic.setName("Эпик 1");
         epic.setDescription("Описание эпика 1");
         var cE1 = taskManager.createEpic(epic);
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        var checkResult = taskManager.getHistoryName();
+
         taskManager.save();
-        FileBackedTasksManager tmLoad = FileBackedTasksManager.loadFromFile(Paths.get(".resources\\test.tmp").toFile());
+        FileBackedTasksManager tmLoad = FileBackedTasksManager.loadFromFile(
+                Paths.get(".resources\\test.tmp").toFile()
+        );
+
         assertNotNull(tmLoad, "Эпики не возвращаются.");
         assertFalse(tmLoad.getAllEpics().isEmpty(), "Список эпиков пустой.");
         assertEquals(1, tmLoad.getAllEpics().size(), "Неверное количество эпиков.");
         assertEquals(cE1.getId(), tmLoad.getAllEpics().get(0).getId(), "Id эпиков не совпадают.");
-        var result = taskManager.getHistoryName();
-        assertTrue(result.isEmpty(), "Список истории не пустой");
+        assertTrue(checkResult.isEmpty(), "Список истории не пустой");
     }
 }
