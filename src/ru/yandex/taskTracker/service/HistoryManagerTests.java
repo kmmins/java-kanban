@@ -14,14 +14,14 @@ public class HistoryManagerTests {
     private final TaskManager taskManager = Managers.getDefault();
     private static final DateTimeFormatter format = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
-    @Test // 3a
+    @Test
     void checkEmptyHistory() {
         var history = historyManager.getHistory();
         assertNotNull(history, "История возвращает null.");
         assertTrue(history.isEmpty(), "Список задач в истории не пустой.");
     }
 
-    @Test // 3b
+    @Test
     void checkRepeatHistory() {
         var task1 = new Task();
         task1.setName("Задача_1");
@@ -58,7 +58,7 @@ public class HistoryManagerTests {
         assertEquals(3, history.size(), "Неверное количество задач в истории.");
     }
 
-    @Test // 3c
+    @Test
     void checkDelHistory() {
         var task4 = new Task();
         task4.setName("Задача_4");

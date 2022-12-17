@@ -16,7 +16,7 @@ public class EpicTests {
     public EpicTests() throws ManagerSaveException, SameTimeTaskException {
     }
 
-    @Test // 1a
+    @Test
     void checkEpicStatusEmpty() {
         var epic1 = new Epic();
         epic1.setName("Эпик_1");
@@ -30,7 +30,7 @@ public class EpicTests {
         assertEquals(NEW, createdEpic1.getStatus(), "Некорректно рассчитан статус эпика");
     }
 
-    @Test // 1b
+    @Test
     void checkEpicStatusNewSubTask() {
         var epic2 = new Epic();
         epic2.setName("Эпик_2");
@@ -65,7 +65,7 @@ public class EpicTests {
         assertEquals(NEW, createdEpic2.getStatus(), "Некорректно рассчитан статус эпика");
     }
 
-    @Test // 1c
+    @Test
     void checkEpicStatusDoneSubTask() {
         var epic3 = new Epic();
         epic3.setName("Эпик_3");
@@ -108,7 +108,7 @@ public class EpicTests {
         assertEquals(DONE, createdEpic3.getStatus(), "Некорректно рассчитан статус эпика");
     }
 
-    @Test // 1d
+    @Test
     void checkEpicStatusNewDoneSubTask() {
         var epic4 = new Epic();
         epic4.setName("Эпик_4");
@@ -147,7 +147,7 @@ public class EpicTests {
         assertEquals(IN_PROGRESS, createdEpic4.getStatus(), "Некорректно рассчитан статус эпика");
     }
 
-    @Test // 1e
+    @Test
     void checkEpicStatusInProgressSubTask() {
         var epic5 = new Epic();
         epic5.setName("Эпик_5");
