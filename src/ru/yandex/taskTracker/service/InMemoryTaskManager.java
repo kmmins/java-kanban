@@ -172,7 +172,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Task> getHistoryName() {
-        return historyManager.getHistoryName();
+        return historyManager.getHistory();
     }
 
     protected TaskStatus evaluateEpicStatus(Epic task) {

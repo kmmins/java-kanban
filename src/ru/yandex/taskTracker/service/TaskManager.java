@@ -73,6 +73,7 @@ public interface TaskManager {
      * Поля status для задач SubTask и Epic рассчитываются и обновляются соответствующе </p>
      *
      * @param task является сам объект соответствующего класса задач
+     * @return созданный объект соответствующего класса задач со сквозной нумерацией Id
      * @see #getEpicSubTasks
      */
     Task createTask(Task task);
@@ -83,6 +84,7 @@ public interface TaskManager {
      * Поля status для задач SubTask и Epic рассчитываются и обновляются соответствующе </p>
      *
      * @param task является сам объект соответствующего класса задач
+     * @return созданный объект соответствующего класса задач со сквозной нумерацией Id
      * @see #getEpicSubTasks
      */
     SubTask createSubTask(SubTask task);
@@ -93,6 +95,7 @@ public interface TaskManager {
      * Поля status для задач SubTask и Epic рассчитываются и обновляются соответствующе </p>
      *
      * @param task является сам объект соответствующего класса задач
+     * @return созданный объект соответствующего класса задач со сквозной нумерацией Id
      * @see #getEpicSubTasks
      */
     Epic createEpic(Epic task);
@@ -151,9 +154,9 @@ public interface TaskManager {
     ArrayList<SubTask> getEpicSubTasks(Epic task);
 
     /**
-     * <p>Получает историю последних полученных задачи по идентификатору </p>
+     * <p>Вызывает метод getHistory() экземпляра класса типа HistoryManager </p>
      *
-     * @return возвращает список задач Task по id из истории
+     * @return возвращает список задач Task содержащий историю вызовов
      */
 
     List<Task> getHistoryName();

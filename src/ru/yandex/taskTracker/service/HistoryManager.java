@@ -23,7 +23,7 @@ public interface HistoryManager {
     /**
      * <p>Получает историю последних полученных задачи по идентификатору </p>
      *
-     * @return возвращает список задач Task по id из истории
+     * @return возвращает список неповторяющихся, последних вызовов задач типа Task
      */
-    List<Task> getHistoryName();
+    List<Task> getHistory();
 }

@@ -13,13 +13,13 @@ public class CSVTaskFormat extends InMemoryTaskManager implements TaskManager {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     /**
-     * <P> Метод преобразует в строку данные об истории вызовов, хранящейся в памяти.</>
+     * <P> Метод преобразует в строку данные об истории вызовов, хранящейся в памяти </>
      *
      * @param manager возвращающий кастомный список истории вызовов задач
      * @return строку с id задач из истории хранящейся в памяти
      */
     public static String historyToString(HistoryManager manager) {
-        List<Task> name = manager.getHistoryName();
+        List<Task> name = manager.getHistory();
         StringBuilder sb = new StringBuilder();
 
         for (Task element : name) {
@@ -32,7 +32,7 @@ public class CSVTaskFormat extends InMemoryTaskManager implements TaskManager {
     }
 
     /**
-     * <P> Метод производит сбор параметров задачи из строки.</>
+     * <P> Метод производит сбор параметров задачи из строки </>
      *
      * @param value строка содержащая задачу считанная из файла "autosave.csv"
      * @return задачу соответствущего типа
@@ -68,7 +68,7 @@ public class CSVTaskFormat extends InMemoryTaskManager implements TaskManager {
     }
 
     /**
-     * <P> Метод собирает id задач хранящихся в истории.</>
+     * <P> Метод собирает id задач хранящихся в истории </>
      *
      * @param value строка содержащая id задач хранящихся в истории
      * @return список id задач из истории
@@ -83,7 +83,7 @@ public class CSVTaskFormat extends InMemoryTaskManager implements TaskManager {
     }
 
     /**
-     * <P> Метод собирает строку из параметров задачи соответствующего типа</>
+     * <P> Метод собирает строку из параметров задачи соответствующего типа </>
      *
      * @param task соответствующего типа
      * @return собранную строку
@@ -103,7 +103,7 @@ public class CSVTaskFormat extends InMemoryTaskManager implements TaskManager {
     }
 
     /**
-     * <P> Метод собирает строку из параметров задачи соответствующего типа</>
+     * <P> Метод собирает строку из параметров задачи соответствующего типа </>
      *
      * @param task соответствующего типа
      * @return собранную строку
@@ -124,7 +124,7 @@ public class CSVTaskFormat extends InMemoryTaskManager implements TaskManager {
     }
 
     /**
-     * <P> Метод собирает строку из параметров задачи соответствующего типа</>
+     * <P> Метод собирает строку из параметров задачи соответствующего типа </>
      *
      * @param task соответствующего типа
      * @return собранную строку
@@ -144,7 +144,7 @@ public class CSVTaskFormat extends InMemoryTaskManager implements TaskManager {
     }
 
     /**
-     * <P> Заголовок для CSV-файла.</>
+     * <P> Заголовок для CSV-файла </>
      *
      * @return первую строку для autosave.csv
      */

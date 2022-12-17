@@ -10,15 +10,13 @@ import java.time.format.DateTimeFormatter;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class HistoryManagerTests {
-
     private final HistoryManager historyManager = Managers.getDefaultHistory();
     private final TaskManager taskManager = Managers.getDefault();
-
     private static final DateTimeFormatter format = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     @Test // 3a
     void checkEmptyHistory() {
-        var history = historyManager.getHistoryName();
+        var history = historyManager.getHistory();
         assertNotNull(history, "История возвращает null.");
         assertTrue(history.isEmpty(), "Список задач в истории не пустой.");
     }
@@ -54,7 +52,7 @@ public class HistoryManagerTests {
         historyManager.appendHistory(createdTask2);
         historyManager.appendHistory(createdTask2);
 
-        var history = historyManager.getHistoryName();
+        var history = historyManager.getHistory();
         assertNotNull(history, "История возвращает null.");
         assertFalse(history.isEmpty(), "Список задач в истории пуст.");
         assertEquals(3, history.size(), "Неверное количество задач в истории.");
@@ -103,21 +101,21 @@ public class HistoryManagerTests {
         historyManager.appendHistory(createdTask7);
         historyManager.appendHistory(createdTask8);
 
-        var history = historyManager.getHistoryName();
+        var history = historyManager.getHistory();
         assertNotNull(history, "История возвращает null.");
         assertFalse(history.isEmpty(), "Список задач в истории пуст.");
         assertEquals(5, history.size(), "Неверное количество задач в истории.");
 
         historyManager.remove(createdTask4.getId());
-        var historyAfterRemoveFirst = historyManager.getHistoryName();
+        var historyAfterRemoveFirst = historyManager.getHistory();
         assertEquals(4, historyAfterRemoveFirst.size(), "Неверное количество задач в истории.");
 
         historyManager.remove(createdTask8.getId());
-        var historyAfterRemoveLast = historyManager.getHistoryName();
+        var historyAfterRemoveLast = historyManager.getHistory();
         assertEquals(3, historyAfterRemoveLast.size(), "Неверное количество задач в истории.");
 
         historyManager.remove(createdTask6.getId());
-        var historyAfterRemoveMid = historyManager.getHistoryName();
+        var historyAfterRemoveMid = historyManager.getHistory();
         assertEquals(2, historyAfterRemoveMid.size(), "Неверное количество задач в истории.");
     }
 }
