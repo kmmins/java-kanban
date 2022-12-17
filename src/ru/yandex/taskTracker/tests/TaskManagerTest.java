@@ -1,10 +1,12 @@
-package ru.yandex.taskTracker.service;
+package ru.yandex.taskTracker.tests;
 
 import org.junit.jupiter.api.Test;
 import ru.yandex.taskTracker.model.Epic;
 import ru.yandex.taskTracker.model.SubTask;
 import ru.yandex.taskTracker.model.Task;
 import ru.yandex.taskTracker.model.TaskStatus;
+import ru.yandex.taskTracker.service.SameTimeTaskException;
+import ru.yandex.taskTracker.service.TaskManager;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

@@ -8,12 +8,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CSVTaskFormat extends InMemoryTaskManager implements TaskManager {
+public class CsvTaskFormat extends InMemoryTaskManager implements TaskManager {
 
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     /**
-     * <P> Метод преобразует в строку данные об истории вызовов, хранящейся в памяти </>
+     * <P> Метод преобразует в строку данные об истории вызовов, хранящейся в памяти. </>
      *
      * @param manager возвращающий кастомный список истории вызовов задач
      * @return строку с id задач из истории хранящейся в памяти
@@ -32,7 +32,7 @@ public class CSVTaskFormat extends InMemoryTaskManager implements TaskManager {
     }
 
     /**
-     * <P> Метод производит сбор параметров задачи из строки </>
+     * <P> Метод производит сбор параметров задачи из строки. </>
      *
      * @param value строка содержащая задачу считанная из файла "autosave.csv"
      * @return задачу соответствущего типа
@@ -68,7 +68,7 @@ public class CSVTaskFormat extends InMemoryTaskManager implements TaskManager {
     }
 
     /**
-     * <P> Метод собирает id задач хранящихся в истории </>
+     * <P> Метод собирает id задач хранящихся в истории. </>
      *
      * @param value строка содержащая id задач хранящихся в истории
      * @return список id задач из истории
@@ -83,68 +83,59 @@ public class CSVTaskFormat extends InMemoryTaskManager implements TaskManager {
     }
 
     /**
-     * <P> Метод собирает строку из параметров задачи соответствующего типа </>
+     * <P> Метод собирает строку из параметров задачи соответствующего типа. </>
      *
      * @param task соответствующего типа
      * @return собранную строку
      */
     public static String taskToString(Task task) {
-        StringBuilder sb = new StringBuilder();
 
-        sb.append(task.getId()).append(",");
-        sb.append(TypeTask.TASK).append(",");
-        sb.append(task.getName()).append(",");
-        sb.append(task.getStatus()).append(",");
-        sb.append(task.getDescription()).append(",");
-        sb.append(task.getStartTime().format(formatter)).append(",");
-        sb.append(task.getDuration().toMinutes()).append(",");
-
-        return sb.toString();
+        return task.getId() + "," +
+                TypeTask.TASK + "," +
+                task.getName() + "," +
+                task.getStatus() + "," +
+                task.getDescription() + "," +
+                task.getStartTime().format(formatter) + "," +
+                task.getDuration().toMinutes() + ",";
     }
 
     /**
-     * <P> Метод собирает строку из параметров задачи соответствующего типа </>
+     * <P> Метод собирает строку из параметров задачи соответствующего типа. </>
      *
      * @param task соответствующего типа
      * @return собранную строку
      */
     public static String subToString(SubTask task) {
-        StringBuilder sb = new StringBuilder();
 
-        sb.append(task.getId()).append(",");
-        sb.append(TypeTask.SUBTASK).append(",");
-        sb.append(task.getName()).append(",");
-        sb.append(task.getStatus()).append(",");
-        sb.append(task.getDescription()).append(",");
-        sb.append(task.getStartTime().format(formatter)).append(",");
-        sb.append(task.getDuration().toMinutes()).append(",");
-        sb.append((task.getEpicId()));
-
-        return sb.toString();
+        return task.getId() + "," +
+                TypeTask.SUBTASK + "," +
+                task.getName() + "," +
+                task.getStatus() + "," +
+                task.getDescription() + "," +
+                task.getStartTime().format(formatter) + "," +
+                task.getDuration().toMinutes() + "," +
+                (task.getEpicId());
     }
 
     /**
-     * <P> Метод собирает строку из параметров задачи соответствующего типа </>
+     * <P> Метод собирает строку из параметров задачи соответствующего типа. </>
      *
      * @param task соответствующего типа
      * @return собранную строку
      */
     public static String epicToString(Epic task) {
-        StringBuilder sb = new StringBuilder();
 
-        sb.append(task.getId()).append(",");
-        sb.append(TypeTask.EPIC).append(",");
-        sb.append(task.getName()).append(",");
-        sb.append(task.getStatus()).append(",");
-        sb.append(task.getDescription()).append(",");
-        sb.append(",");
-        sb.append(task.getDuration().toMinutes()).append(",");
-
-        return sb.toString();
+        return task.getId() + "," +
+                TypeTask.EPIC + "," +
+                task.getName() + "," +
+                task.getStatus() + "," +
+                task.getDescription() + "," +
+                "," +
+                task.getDuration().toMinutes() + ",";
     }
 
     /**
-     * <P> Заголовок для CSV-файла </>
+     * <P> Заголовок для CSV-файла. </>
      *
      * @return первую строку для autosave.csv
      */

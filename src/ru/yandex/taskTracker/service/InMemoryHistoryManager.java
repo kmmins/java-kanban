@@ -7,7 +7,7 @@ import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
-    private CustomLinkedList customList = new CustomLinkedList();
+    private final CustomLinkedList customList = new CustomLinkedList();
 
     @Override
     public void appendHistory(Task task) {

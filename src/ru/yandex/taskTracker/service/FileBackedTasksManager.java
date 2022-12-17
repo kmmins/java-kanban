@@ -4,7 +4,6 @@ import ru.yandex.taskTracker.model.*;
 
 import java.io.*;
 import java.nio.file.Files;
-import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -18,7 +17,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     }
 
     /**
-     * <P>Метод сохраняет текущее состояние трекера задач в файл "autosave.csv".</>
+     * <P>Метод сохраняет текущее состояние трекера задач в файл "autosave.csv". </>
      */
     public void save() throws ManagerSaveException {
 
@@ -36,30 +35,30 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                 FileWriter writer = new FileWriter(saveFilePath.toFile());
                 BufferedWriter fileWriter = new BufferedWriter(writer)) {
 
-            fileWriter.write(CSVTaskFormat.getHeader());
+            fileWriter.write(CsvTaskFormat.getHeader());
             fileWriter.write("\r\n");
 
             for (Epic element : getAllEpics()) {
-                fileWriter.write(CSVTaskFormat.epicToString(element));
+                fileWriter.write(CsvTaskFormat.epicToString(element));
                 fileWriter.write("\r\n");
             }
             for (Task element : getAllTasks()) {
-                fileWriter.write(CSVTaskFormat.taskToString(element));
+                fileWriter.write(CsvTaskFormat.taskToString(element));
                 fileWriter.write("\r\n");
             }
             for (SubTask element : getAllSubTasks()) {
-                fileWriter.write(CSVTaskFormat.subToString(element));
+                fileWriter.write(CsvTaskFormat.subToString(element));
                 fileWriter.write("\r\n");
             }
             fileWriter.write("\r\n");
-            fileWriter.write(CSVTaskFormat.historyToString(historyManager));
+            fileWriter.write(CsvTaskFormat.historyToString(historyManager));
         } catch (IOException e) {
             throw new ManagerSaveException("Произошла ошибка при записи в файл: " + e.getMessage());
         }
     }
 
     /**
-     * <P>Метод считывает текущее состояние трекера из файла автосохранения.</>
+     * <P>Метод считывает текущее состояние трекера из файла автосохранения. </>
      *
      * @param file содержащий текущее состояние программы - "autosave.csv"
      * @return экземпляр класса FileBackedTasksManager
@@ -103,12 +102,12 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     }
 
     /**
-     * <P>Метод создает задачу соответствующего типа из данных, хранящихся в файле автосохранения.</>
+     * <P>Метод создает задачу соответствующего типа из данных, хранящихся в файле автосохранения. </>
      *
      * @param value строка считанная из файла "autosave.csv", содержащая данные добавленных в трекер задач
      */
     public void createTaskFromString(String value) {
-        Task parseResult = CSVTaskFormat.parseTask(value);
+        Task parseResult = CsvTaskFormat.parseTask(value);
 
         if (taskCounterId < parseResult.getId()) { // позволяет сохранить сквозную нумерацию счетчика родительского класса
             taskCounterId = parseResult.getId();
@@ -130,12 +129,12 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     }
 
     /**
-     * <P>Метод определяет по id тип задачи и передает ее в память программы для хранения истории.</>
+     * <P>Метод определяет по id тип задачи и передает ее в память программы для хранения истории. </>
      *
      * @param value строка содержащая id задач, отвечающая за хранения истории, считанная из файла "autosave.csv"
      */
     public void fillHistoryFromString(String value) {
-        List<Integer> fillId = CSVTaskFormat.parseHistory(value);
+        List<Integer> fillId = CsvTaskFormat.parseHistory(value);
         for (int id : fillId) {
             if (taskData.containsKey(id)) {
                 Task task = taskData.get(id);

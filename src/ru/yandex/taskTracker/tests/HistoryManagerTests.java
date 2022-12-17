@@ -1,7 +1,10 @@
-package ru.yandex.taskTracker.service;
+package ru.yandex.taskTracker.tests;
 
 import org.junit.jupiter.api.Test;
 import ru.yandex.taskTracker.model.Task;
+import ru.yandex.taskTracker.service.HistoryManager;
+import ru.yandex.taskTracker.service.Managers;
+import ru.yandex.taskTracker.service.TaskManager;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

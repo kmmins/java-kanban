@@ -1,7 +1,11 @@
-package ru.yandex.taskTracker.service;
+package ru.yandex.taskTracker.tests;
 
 import org.junit.jupiter.api.Test;
 import ru.yandex.taskTracker.model.*;
+import ru.yandex.taskTracker.service.ManagerSaveException;
+import ru.yandex.taskTracker.service.Managers;
+import ru.yandex.taskTracker.service.SameTimeTaskException;
+import ru.yandex.taskTracker.service.TaskManager;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

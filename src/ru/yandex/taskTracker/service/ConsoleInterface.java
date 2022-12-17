@@ -11,9 +11,9 @@ import java.util.Scanner;
 public class ConsoleInterface {
     private static final DateTimeFormatter format = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
-    private TaskManager taskManager = Managers.getFileBacked();
+    private final TaskManager taskManager = Managers.getFileBacked();
 
-    private Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in);
 
     public ConsoleInterface() throws ManagerSaveException, SameTimeTaskException {
     }
