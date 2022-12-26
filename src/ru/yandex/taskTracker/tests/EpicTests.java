@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static ru.yandex.taskTracker.model.TaskStatus.*;
 
 public class EpicTests {
-    private final TaskManager taskManager = Managers.getDefault();
+    private final TaskManager taskManager = Managers.getInMemory();
     private static final DateTimeFormatter format = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
     public EpicTests() throws ManagerSaveException, SameTimeTaskException {
     }
