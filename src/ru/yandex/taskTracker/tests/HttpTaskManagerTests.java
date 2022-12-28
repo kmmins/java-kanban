@@ -4,10 +4,11 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import ru.yandex.taskTracker.service.HttpTaskManager;
 import ru.yandex.taskTracker.service.KVServer;
+import ru.yandex.taskTracker.tests.TaskManagerTest;
 
 import java.io.IOException;
 
-public class HttpTaskManagerTests extends TaskManagerTest<HttpTaskManager>{
+public class HttpTaskManagerTests extends TaskManagerTest<HttpTaskManager> {
     KVServer testServer;
 
     @BeforeEach

@@ -15,7 +15,6 @@ public class Main {
             System.out.println("\r\n//////////////////////////\r\n/////  Task Tracker  /////\r\n" +
                     "//////////////////////////");
 
-
             System.out.println("1 - Запустить консольное меню\r\n2 - Запуск KVServer\r\n3 - Запуск HttpTaskServer" +
                     "\r\n0 - Выйти из программы");
             int commandMain = scannerIntMain.nextInt();

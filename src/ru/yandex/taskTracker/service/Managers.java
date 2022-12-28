@@ -1,24 +1,26 @@
 package ru.yandex.taskTracker.service;
 
-import java.io.IOException;
 import java.nio.file.Paths;
 
 public class Managers {
 
-    /** <p> Выбор текущей реализации работы программы. </>
+    /** <p> Выбор реализации работы программы по умолчанию. </>
      *
-     * @return возвращает реализацию работы программы с хранением в памяти
+     * @return возвращает реализацию работы программы установленную по умолчанию
      */
     public static TaskManager getDefault() throws ManagerSaveException {
        return getHttp();
     }
 
+    /** <p> Выбор реализации работы программы с хранением в памяти. </>
+     *
+     * @return возвращает реализацию работы программы с хранением в памяти
+     */
     public static TaskManager getInMemory() {
         return new InMemoryTaskManager();
     }
 
-
-    /** <p> Выбор текущей реализации работы программы. </>
+    /** <p> Выбор реализации работы программы с хранением в специальном файле. </>
      *
      * @return возвращает реализацию работы программы с хранением в специальном файле
      */
@@ -26,14 +28,17 @@ public class Managers {
         return FileBackedTasksManager.loadFromFile(Paths.get(".resources\\autosave.csv").toFile());
     }
 
+    /** <p> Выбор реализации работы программы с хранением на Http-сервере. </>
+     *
+     * @return возвращает реализацию работы программы с хранением на Http-сервере
+     */
     public static HttpTaskManager getHttp() throws ManagerSaveException {
         return new HttpTaskManager("http://localhost:8078/");
     }
 
-
-    /** <p> Выбор текущей реализации отслеживания истории. </>
+    /** <p> Выбор реализации отслеживания истории по умолчанию. </>
      *
-     * @return при запуске тестирования программы возвращает реализацию отслеживания истории вызова задач
+     * @return возвращает реализацию отслеживания истории вызова задач по умолчанию
      */
     public static HistoryManager getDefaultHistory() {
         return new InMemoryHistoryManager();

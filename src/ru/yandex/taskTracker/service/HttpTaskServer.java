@@ -22,27 +22,21 @@ public class HttpTaskServer {
 
     private static final int PORT = 8080;
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
-    private static final Gson gson = new Gson();
+    private HttpServer httpServer;
+    Gson gson = new Gson();
 
     public void startHttpServer() throws IOException {
-        HttpServer httpServer = HttpServer.create();
-
+        httpServer = HttpServer.create();
         httpServer.bind(new InetSocketAddress(PORT), 0);
-        httpServer.createContext("/tasks", new someHandler());
+        httpServer.createContext("/tasks", new SomeHandler());
         httpServer.start(); // запускаем сервер
 
         System.out.println("HTTP-сервер запущен на " + PORT + " порту!");
     }
 
-    //GET       http://localhost:8080/tasks/task/
-    //GET       http://localhost:8080/tasks/task/?id=4
-    //POST      http://localhost:8080/tasks/task/Body:{task...}
-    //DELETE    http://localhost:8080/tasks/task/?id=5
-    //DELETE    http://localhost:8080/tasks/task/
-    //...
-    //GET       http://localhost:8080/tasks/subtask/epic/?id=1
-    //GET       http://localhost:8080/tasks/history/
-    //GET       http://localhost:8080/tasks/
+    public void stopHttpServer() {
+        httpServer.stop(0);
+    }
 
     private int parseIdFromHttp(HttpExchange ex) {
         try {
@@ -77,7 +71,7 @@ public class HttpTaskServer {
         ex.close();
     }
 
-    class someHandler implements HttpHandler {
+    class SomeHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange ex) throws IOException {
             System.out.println("Началась обработка /tasks запроса от клиента.");
@@ -86,8 +80,8 @@ public class HttpTaskServer {
 
             String[] parts = requestPath.split("/");
 //getAllTasks
-            if (parts.length == 3 && parts[1].equals("tasks") && parts[2].equals("task") && parseIdFromHttp(ex) == -1) {
-                if (requestMethod.equals("GET")) {
+            if (parts.length == 3 && "tasks".equals(parts[1]) && "task".equals(parts[2]) && parseIdFromHttp(ex) == -1) {
+                if ("GET".equals(requestMethod)) {
                     try {
                         String getAllTasksJson = gson.toJson(taskManager.getAllTasks());
                         writeResponse(ex, getAllTasksJson, 200);
@@ -99,8 +93,8 @@ public class HttpTaskServer {
                 }
             }
 //getTaskById
-            if (parts.length == 3 && parts[1].equals("tasks") && parts[2].equals("task") && parseIdFromHttp(ex) != -1) {
-                if (requestMethod.equals("GET")) {
+            if (parts.length == 3 && "tasks".equals(parts[1]) && "task".equals(parts[2]) && parseIdFromHttp(ex) != -1) {
+                if ("GET".equals(requestMethod)) {
                     try {
                         String getTaskByIdJson = gson.toJson(taskManager.getTaskById(parseIdFromHttp(ex)));
                         writeResponse(ex, getTaskByIdJson, 200);
@@ -112,8 +106,8 @@ public class HttpTaskServer {
                 }
             }
 //createdTask
-            if (parts.length == 3 && parts[1].equals("tasks") && parts[2].equals("task") && parseIdFromHttp(ex) == -1) {
-                if (requestMethod.equals("POST")) {
+            if (parts.length == 3 && "tasks".equals(parts[1]) && "task".equals(parts[2]) && parseIdFromHttp(ex) == -1) {
+                if ("POST".equals(requestMethod)) {
                     try {
                         InputStream is = ex.getRequestBody();
                         String body = new String(is.readAllBytes(), DEFAULT_CHARSET);
@@ -131,10 +125,10 @@ public class HttpTaskServer {
                 }
             }
 //deleteTaskById
-            if (parts.length == 3 && parts[1].equals("tasks") && parts[2].equals("task") && parseIdFromHttp(ex) != -1) {
-                if (requestMethod.equals("DELETE")) {
+            if (parts.length == 3 && "tasks".equals(parts[1]) && "task".equals(parts[2]) && parseIdFromHttp(ex) != -1) {
+                if ("DELETE".equals(requestMethod)) {
                     try {
-                        taskManager.deleteTaskById(parseIdFromHttp(ex)); // НЕ РАБОТАЕТ DELETE ;(((((
+                        taskManager.deleteTaskById(parseIdFromHttp(ex));
                         writeResponse(ex, "Задача c id: " + parseIdFromHttp(ex) + " удалена", 200);
                     } catch (Exception e) {
                         writeResponse(ex, "Ошибка. " + e.getMessage(), 404);
@@ -145,9 +139,9 @@ public class HttpTaskServer {
             }
 //deleteAllTasks
             if (parts.length == 3 && parts[1].equals("tasks") && parts[2].equals("task") && parseIdFromHttp(ex) == -1) {
-                if (requestMethod.equals("DELETE")) {
+                if ("DELETE".equals(requestMethod)) {
                     try {
-                        taskManager.deleteAllTasks(); // НЕ РАБОТАЕТ DELETE ;(((((
+                        taskManager.deleteAllTasks();
                         writeResponse(ex, "Все задачи удалены", 200);
                     } catch (Exception e) {
                         writeResponse(ex, "Ошибка. " + e.getMessage(), 400);
@@ -157,8 +151,8 @@ public class HttpTaskServer {
                 }
             }
 //getAllSubTasks
-            if (parts.length == 3 && parts[1].equals("tasks") && parts[2].equals("subtask") && parseIdFromHttp(ex) == -1) {
-                if (requestMethod.equals("GET")) {
+            if (parts.length == 3 && "tasks".equals(parts[1]) && "subtask".equals(parts[2]) && parseIdFromHttp(ex) == -1) {
+                if ("GET".equals(requestMethod)) {
                     try {
                         String getAllSubTasksJson = gson.toJson(taskManager.getAllSubTasks());
                         writeResponse(ex, getAllSubTasksJson, 200);
@@ -170,8 +164,8 @@ public class HttpTaskServer {
                 }
             }
 //getSubTaskById
-            if (parts.length == 3 && parts[1].equals("tasks") && parts[2].equals("subtask") && parseIdFromHttp(ex) != -1) {
-                if (requestMethod.equals("GET")) {
+            if (parts.length == 3 && "tasks".equals(parts[1]) && "subtask".equals(parts[2]) && parseIdFromHttp(ex) != -1) {
+                if ("GET".equals(requestMethod)) {
                     try {
                         String getSubTaskByIdJson = gson.toJson(taskManager.getSubTaskById(parseIdFromHttp(ex)));
                         writeResponse(ex, getSubTaskByIdJson, 200);
@@ -183,8 +177,8 @@ public class HttpTaskServer {
                 }
             }
 //createdSubTask
-            if (parts.length == 3 && parts[1].equals("tasks") && parts[2].equals("subtask") && parseIdFromHttp(ex) == -1) {
-                if (requestMethod.equals("POST")) {
+            if (parts.length == 3 && "tasks".equals(parts[1]) && "subtask".equals(parts[2]) && parseIdFromHttp(ex) == -1) {
+                if ("POST".equals(requestMethod)) {
                     try {
                         InputStream is = ex.getRequestBody();
                         String body = new String(is.readAllBytes(), DEFAULT_CHARSET);
@@ -202,10 +196,10 @@ public class HttpTaskServer {
                 }
             }
 //deleteSubTaskById
-            if (parts.length == 3 && parts[1].equals("tasks") && parts[2].equals("subtask") && parseIdFromHttp(ex) != -1) {
-                if (requestMethod.equals("DELETE")) {
+            if (parts.length == 3 && "tasks".equals(parts[1]) && "subtask".equals(parts[2]) && parseIdFromHttp(ex) != -1) {
+                if ("DELETE".equals(requestMethod)) {
                     try {
-                        taskManager.deleteSubTaskById(parseIdFromHttp(ex)); // НЕ РАБОТАЕТ DELETE ;(((((
+                        taskManager.deleteSubTaskById(parseIdFromHttp(ex));
                         writeResponse(ex, "Подзадача c id: " + parseIdFromHttp(ex) + " удалена", 200);
                     } catch (Exception e) {
                         writeResponse(ex, "Ошибка. " + e.getMessage(), 404);
@@ -215,10 +209,10 @@ public class HttpTaskServer {
                 }
             }
 //deleteAllSubTasks
-            if (parts.length == 3 && parts[1].equals("tasks") && parts[2].equals("subtask") && parseIdFromHttp(ex) == -1) {
-                if (requestMethod.equals("DELETE")) {
+            if (parts.length == 3 && "tasks".equals(parts[1]) && "subtask".equals(parts[2]) && parseIdFromHttp(ex) == -1) {
+                if ("DELETE".equals(requestMethod)) {
                     try {
-                        taskManager.deleteAllSubTasks(); // НЕ РАБОТАЕТ DELETE ;(((((
+                        taskManager.deleteAllSubTasks();
                         writeResponse(ex, "Все подзадачи удалены", 200);
                     } catch (Exception e) {
                         writeResponse(ex, "Ошибка. " + e.getMessage(), 400);
@@ -228,8 +222,8 @@ public class HttpTaskServer {
                 }
             }
 //getAllEpics
-            if (parts.length == 3 && parts[1].equals("tasks") && parts[2].equals("epic") && parseIdFromHttp(ex) == -1) {
-                if (requestMethod.equals("GET")) {
+            if (parts.length == 3 && "tasks".equals(parts[1]) && "epic".equals(parts[2]) && parseIdFromHttp(ex) == -1) {
+                if ("GET".equals(requestMethod)) {
                     try {
                         String getAllEpicsJson = gson.toJson(taskManager.getAllEpics());
                         writeResponse(ex, getAllEpicsJson, 200);
@@ -241,8 +235,8 @@ public class HttpTaskServer {
                 }
             }
 //getEpicById
-            if (parts.length == 3 && parts[1].equals("tasks") && parts[2].equals("epic") && parseIdFromHttp(ex) != -1) {
-                if (requestMethod.equals("GET")) {
+            if (parts.length == 3 && "tasks".equals(parts[1]) && "epic".equals(parts[2]) && parseIdFromHttp(ex) != -1) {
+                if ("GET".equals(requestMethod)) {
                     try {
                         String getEpicByIdJson = gson.toJson(taskManager.getEpicById(parseIdFromHttp(ex)));
                         writeResponse(ex, getEpicByIdJson, 200);
@@ -254,8 +248,8 @@ public class HttpTaskServer {
                 }
             }
 //createEpic
-            if (parts.length == 3 && parts[1].equals("tasks") && parts[2].equals("epic") && parseIdFromHttp(ex) == -1) {
-                if (requestMethod.equals("POST")) {
+            if (parts.length == 3 && "tasks".equals(parts[1]) && "epic".equals(parts[2]) && parseIdFromHttp(ex) == -1) {
+                if ("POST".equals(requestMethod)) {
                     try {
                         InputStream is = ex.getRequestBody();
                         String body = new String(is.readAllBytes(), DEFAULT_CHARSET);
@@ -273,8 +267,8 @@ public class HttpTaskServer {
                 }
             }
 //deleteEpicById
-            if (parts.length == 3 && parts[1].equals("tasks") && parts[2].equals("epic") && parseIdFromHttp(ex) != -1) {
-                if (requestMethod.equals("DELETE")) {
+            if (parts.length == 3 && "tasks".equals(parts[1]) && "epic".equals(parts[2]) && parseIdFromHttp(ex) != -1) {
+                if ("DELETE".equals(requestMethod)) {
                     try {
                         taskManager.deleteEpicById(parseIdFromHttp(ex)); // НЕ РАБОТАЕТ DELETE ;(((((
                         writeResponse(ex, "Эпик c id: " + parseIdFromHttp(ex) + " удален", 200);
@@ -286,8 +280,8 @@ public class HttpTaskServer {
                 }
             }
 //deleteAllEpics
-            if (parts.length == 3 && parts[1].equals("tasks") && parts[2].equals("epic") && parseIdFromHttp(ex) == -1) {
-                if (requestMethod.equals("DELETE")) {
+            if (parts.length == 3 && "tasks".equals(parts[1]) && "epic".equals(parts[2]) && parseIdFromHttp(ex) == -1) {
+                if ("DELETE".equals(requestMethod)) {
                     try {
                         taskManager.deleteAllEpics(); // НЕ РАБОТАЕТ DELETE ;(((((
                         writeResponse(ex, "Все задачи удалены", 200);
@@ -299,9 +293,9 @@ public class HttpTaskServer {
                 }
             }
 //getEpicSubTasks
-            if (parts.length == 4 && parts[1].equals("tasks") && parts[2].equals("subtask") && parts[3].equals("epic")
+            if (parts.length == 4 && "tasks".equals(parts[1]) && "subtask".equals(parts[2]) && "epic".equals(parts[3])
                     && parseIdFromHttp(ex) != -1) {
-                if (requestMethod.equals("GET")) {
+                if ("GET".equals(requestMethod)) {
                     try {
                         String getEpicSubTasksJson = gson.toJson(taskManager.getEpicSubTasks(
                                 taskManager.getEpicById(parseIdFromHttp(ex))));
@@ -314,8 +308,8 @@ public class HttpTaskServer {
                 }
             }
 //getHistoryName
-            if (parts.length == 3 && parts[1].equals("tasks") && parts[2].equals("history") && parseIdFromHttp(ex) == -1) {
-                if (requestMethod.equals("GET")) {
+            if (parts.length == 3 && "tasks".equals(parts[1]) && "history".equals(parts[2]) && parseIdFromHttp(ex) == -1) {
+                if ("GET".equals(requestMethod)) {
                     try {
                         String getHistoryNameJson = gson.toJson(taskManager.getHistoryName());
                         writeResponse(ex, getHistoryNameJson, 200); // В РЕСПОНС ЭПИК ВСМЕСТЕ С РЕЛЕЙТЕД САБТАСК
@@ -328,8 +322,8 @@ public class HttpTaskServer {
 
             }
 //getPrioritizedTasks
-            if (parts.length == 2 && parts[1].equals("tasks")) {
-                if (requestMethod.equals("GET")) {
+            if (parts.length == 2 && "tasks".equals(parts[1])) {
+                if ("GET".equals(requestMethod)) {
                     try {
                         String getPrioritizedTasksJson = gson.toJson(taskManager.getPrioritizedTasks());
                         writeResponse(ex, getPrioritizedTasksJson, 200);

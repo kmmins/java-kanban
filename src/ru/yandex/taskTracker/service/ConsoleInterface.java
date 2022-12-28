@@ -2,7 +2,6 @@ package ru.yandex.taskTracker.service;
 
 import ru.yandex.taskTracker.model.*;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -12,11 +11,13 @@ import java.util.Scanner;
 public class ConsoleInterface {
     private static final DateTimeFormatter format = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
-    private final TaskManager taskManager = Managers.getHttp();
+    private final TaskManager taskManager;
 
-    private final Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner;
 
     public ConsoleInterface() throws ManagerSaveException, SameTimeTaskException {
+        taskManager = Managers.getHttp();
+        scanner = new Scanner(System.in);
     }
 
     public void startMenu() {

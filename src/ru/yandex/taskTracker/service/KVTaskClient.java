@@ -1,7 +1,5 @@
 package ru.yandex.taskTracker.service;
 
-import com.google.gson.Gson;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -10,9 +8,9 @@ import java.net.http.HttpResponse;
 
 public class KVTaskClient {
 
-    String url;
-    String token;
-    HttpClient kvClient;
+    private final String url;
+    private final String token;
+    private final HttpClient kvClient;
 
     public KVTaskClient(String url) throws IOException, InterruptedException {
         this.url = url;

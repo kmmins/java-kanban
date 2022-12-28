@@ -27,23 +27,24 @@ public class KVServer {
         server.createContext("/load", this::load);
     }
 
-    private void load(HttpExchange h) throws IOException {
+    private void load(HttpExchange h) throws IOException, FirstTimeStartException {
         // TODO Добавьте получение значения по ключу
         try {
             if (!hasAuth(h)) {
-                System.out.println("Запрос неавторизован, нужен параметр в query API_TOKEN со значением апи-ключа");
+                System.out.println("Запрос не авторизован, нужен параметр в query API_TOKEN со значением апи-ключа");
                 h.sendResponseHeaders(403, 0);
                 return;
             }
             if ("GET".equals(h.getRequestMethod())) {
-                String key = h.getRequestURI().getPath().substring("/load/".length()); //???
+                String key = h.getRequestURI().getPath().substring("/load/".length());
                 if (!data.containsKey(key)) {
-                    System.out.println("В data отсутствует key указанный в пути: /load/{key}");
+                    System.out.println("KVServer не содержит key указанный в запросе");
                     h.sendResponseHeaders(400, 0);
                     return;
                 }
                 sendText(h, data.get(key));
                 System.out.println("Получено значение для ключа " + key + " !");
+                h.sendResponseHeaders(200, 0);
             } else {
                 System.out.println("/load ждёт GET-запрос, а получил: " + h.getRequestMethod());
                 h.sendResponseHeaders(405, 0);
@@ -57,7 +58,7 @@ public class KVServer {
         try {
             System.out.println("\n/save");
             if (!hasAuth(h)) {
-                System.out.println("Запрос неавторизован, нужен параметр в query API_TOKEN со значением апи-ключа");
+                System.out.println("Запрос не авторизован, нужен параметр в query API_TOKEN со значением апи-ключа");
                 h.sendResponseHeaders(403, 0);
                 return;
             }

@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.taskTracker.model.Epic;
 import ru.yandex.taskTracker.service.FileBackedTasksManager;
+import ru.yandex.taskTracker.tests.TaskManagerTest;
 
 import java.nio.file.Paths;
 

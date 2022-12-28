@@ -13,9 +13,9 @@ import java.util.List;
 
 public class HttpTaskManager extends FileBackedTasksManager {
 
-    KVTaskClient kvt;
+    private final KVTaskClient kvt;
 
-    private static final Gson gson = new Gson();
+    Gson gson = new Gson();
 
     public HttpTaskManager(String url) throws ManagerSaveException {
 
@@ -24,15 +24,12 @@ public class HttpTaskManager extends FileBackedTasksManager {
             kvt = new KVTaskClient(url);
             try {
                 loadHelper();
-            } catch (NullPointerException e) {
-                System.out.println("При первом запуске данные о состоянии отсутствуют");
-                save();
-                loadHelper();
+            } catch (FirstTimeStartException e) {
+                System.out.println("KVServer не содержит данных о состоянии трекера задач. " + e.getMessage());
             }
         } catch (IOException | InterruptedException e) {
-            throw new ManagerSaveException("Произошла ошибка при загрузке состояния с сервера: " + e.getMessage());
+            throw new ManagerSaveException("Произошла ошибка при загрузке состояния с сервера. " + e.getMessage());
         }
-
     }
 
     @Override
@@ -60,55 +57,91 @@ public class HttpTaskManager extends FileBackedTasksManager {
             kvt.put(hystorykey, gHn);
 
         } catch (IOException | InterruptedException e) {
-            throw new ManagerSaveException("Произошла ошибка при загрузке на сервер: " + e.getMessage());
+            throw new ManagerSaveException("Произошла ошибка при отправке данных на сервер: " + e.getMessage());
         }
     }
 
-    private void loadHelper() throws IOException, InterruptedException {
-        String epicValue = kvt.load("epickey");
-        Type listType = new TypeToken<List<Epic>>() {
-        }.getType();
-        List<Epic> epicFromJson = gson.fromJson(epicValue, listType);
-        for (Epic elm : epicFromJson) {
-            epicData.put(elm.getId(), elm);
+    private void loadHelper() {
+        Type listType;
+        try {
+            String epicValue = kvt.load("epickey");
+            if (!epicValue.isEmpty()) {
+                listType = new TypeToken<List<Epic>>() {
+                }.getType();
+                List<Epic> epicFromJson = gson.fromJson(epicValue, listType);
+                for (Epic elm : epicFromJson) {
+                    epicData.put(elm.getId(), elm);
+                }
+            } else {
+                throw new FirstTimeStartException("Отсутствуют данные для загрузки");
+            }
+        } catch (IOException | InterruptedException e) {
+            throw new ManagerSaveException("Произошла ошибка при получении от сервера данных по ключу 'epickey': "
+                    + e.getMessage());
         }
 
-        String taskValue = kvt.load("taskkey");
-        listType = new TypeToken<List<Task>>() {
-        }.getType();
-        List<Task> tasksFromJson = gson.fromJson(taskValue, listType);
-        for (Task elm : tasksFromJson) {
-            taskData.put(elm.getId(), elm);
+        try {
+            String taskValue = kvt.load("taskkey");
+            if (!taskValue.isEmpty()) {
+                listType = new TypeToken<List<Task>>() {
+                }.getType();
+                List<Task> tasksFromJson = gson.fromJson(taskValue, listType);
+                for (Task elm : tasksFromJson) {
+                    taskData.put(elm.getId(), elm);
+                }
+            } else {
+                throw new FirstTimeStartException("Отсутствуют данные для загрузки");
+            }
+        } catch (IOException | InterruptedException e) {
+            throw new ManagerSaveException("Произошла ошибка при получении от сервера данных по ключу 'taskkey': "
+                    + e.getMessage());
         }
-
-        String subValue = kvt.load("subkey");
-        listType = new TypeToken<List<SubTask>>() {
-        }.getType();
-        List<SubTask> subFromJson = gson.fromJson(subValue, listType);
-        for (SubTask elm : subFromJson) {
-            subTaskData.put(elm.getId(), elm);
-            Epic eSbT = epicData.get(elm.getEpicId());
-            eSbT.getRelatedSubTasks().add(elm);
-            updateEpicData(eSbT);
+        try {
+            String subValue = kvt.load("subkey");
+            if (!subValue.isEmpty()) {
+                listType = new TypeToken<List<SubTask>>() {
+                }.getType();
+                List<SubTask> subFromJson = gson.fromJson(subValue, listType);
+                for (SubTask elm : subFromJson) {
+                    subTaskData.put(elm.getId(), elm);
+                    Epic eSbT = epicData.get(elm.getEpicId());
+                    eSbT.getRelatedSubTasks().add(elm);
+                    updateEpicData(eSbT);
+                }
+            } else {
+                throw new FirstTimeStartException("Отсутствуют данные для загрузки");
+            }
+        } catch (IOException | InterruptedException e) {
+            throw new ManagerSaveException("Произошла ошибка при получении от сервера данных по ключу 'subkey': "
+                    + e.getMessage());
         }
         sortMethod();
 
-        String historyId = kvt.load("hystorykey");
-        listType = new TypeToken<List<Integer>>() {
-        }.getType();
+        try {
+            String historyId = kvt.load("hystorykey");
+            if (!historyId.isEmpty()) {
+                listType = new TypeToken<List<Integer>>() {
+                }.getType();
 
-        List<Integer> fillId = gson.fromJson(historyId, listType);
-        for (int id : fillId) {
-            if (taskData.containsKey(id)) {
-                Task task = taskData.get(id);
-                historyManager.appendHistory(task);
-            } else if (subTaskData.containsKey(id)) {
-                SubTask task = subTaskData.get(id);
-                historyManager.appendHistory(task);
-            } else if (epicData.containsKey(id)) {
-                Epic task = epicData.get(id);
-                historyManager.appendHistory(task);
+                List<Integer> fillId = gson.fromJson(historyId, listType);
+                for (int id : fillId) {
+                    if (taskData.containsKey(id)) {
+                        Task task = taskData.get(id);
+                        historyManager.appendHistory(task);
+                    } else if (subTaskData.containsKey(id)) {
+                        SubTask task = subTaskData.get(id);
+                        historyManager.appendHistory(task);
+                    } else if (epicData.containsKey(id)) {
+                        Epic task = epicData.get(id);
+                        historyManager.appendHistory(task);
+                    }
+                }
+            } else {
+                throw new FirstTimeStartException("Отсутствуют данные для загрузки");
             }
+        } catch (IOException | InterruptedException e) {
+            throw new ManagerSaveException("Произошла ошибка при получении от сервера данных 'hystorykey': "
+                    + e.getMessage());
         }
     }
 }
