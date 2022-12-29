@@ -27,7 +27,7 @@ public class KVServer {
         server.createContext("/load", this::load);
     }
 
-    private void load(HttpExchange h) throws IOException, FirstTimeStartException {
+    private void load(HttpExchange h) throws IOException {
         // TODO Добавьте получение значения по ключу
         try {
             if (!hasAuth(h)) {
@@ -39,7 +39,7 @@ public class KVServer {
                 String key = h.getRequestURI().getPath().substring("/load/".length());
                 if (!data.containsKey(key)) {
                     System.out.println("KVServer не содержит key указанный в запросе");
-                    h.sendResponseHeaders(400, 0);
+                    h.sendResponseHeaders(404, 0);
                     return;
                 }
                 sendText(h, data.get(key));

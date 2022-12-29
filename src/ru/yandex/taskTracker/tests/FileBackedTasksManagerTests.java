@@ -20,7 +20,12 @@ public class FileBackedTasksManagerTests extends TaskManagerTest<FileBackedTasks
 
     @Test
     void checkLoadEmpty() {
-        taskManager.save();
+        var epic = new Epic();
+        epic.setName("Эпик 1");
+        epic.setDescription("Описание эпика 1");
+        taskManager.createEpic(epic);
+        taskManager.deleteAllEpics();
+
         FileBackedTasksManager tmLoad = FileBackedTasksManager.loadFromFile(
                 Paths.get(".resources\\test.tmp").toFile()
         );
@@ -35,7 +40,6 @@ public class FileBackedTasksManagerTests extends TaskManagerTest<FileBackedTasks
         epic.setDescription("Описание эпика 1");
         var cE1 = taskManager.createEpic(epic);
 
-        taskManager.save();
         FileBackedTasksManager tmLoad = FileBackedTasksManager.loadFromFile(
                 Paths.get(".resources\\test.tmp").toFile()
         );
@@ -54,7 +58,6 @@ public class FileBackedTasksManagerTests extends TaskManagerTest<FileBackedTasks
         var cE1 = taskManager.createEpic(epic);
         var checkResult = taskManager.getHistoryName();
 
-        taskManager.save();
         FileBackedTasksManager tmLoad = FileBackedTasksManager.loadFromFile(
                 Paths.get(".resources\\test.tmp").toFile()
         );
@@ -63,6 +66,8 @@ public class FileBackedTasksManagerTests extends TaskManagerTest<FileBackedTasks
         assertFalse(tmLoad.getAllEpics().isEmpty(), "Список эпиков пустой.");
         assertEquals(1, tmLoad.getAllEpics().size(), "Неверное количество эпиков.");
         assertEquals(cE1.getId(), tmLoad.getAllEpics().get(0).getId(), "Id эпиков не совпадают.");
+
         assertTrue(checkResult.isEmpty(), "Список истории не пустой");
+        assertTrue(tmLoad.getHistoryName().isEmpty(), "Список истории не пустой");
     }
 }

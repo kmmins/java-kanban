@@ -19,7 +19,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     /**
      * <P>Метод сохраняет текущее состояние трекера задач в файл "autosave.csv". </>
      */
-    public void save() throws ManagerSaveException {
+    protected void save() throws ManagerSaveException {
 
         Path saveFilePath = Paths.get(saveFileName);
         Path saveDirPath = saveFilePath.getParent();

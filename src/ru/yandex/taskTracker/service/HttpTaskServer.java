@@ -1,12 +1,12 @@
 package ru.yandex.taskTracker.service;
 
-import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import ru.yandex.taskTracker.model.Epic;
 import ru.yandex.taskTracker.model.SubTask;
 import ru.yandex.taskTracker.model.Task;
+import ru.yandex.taskTracker.util.GsonClass;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,20 +22,15 @@ public class HttpTaskServer {
 
     private static final int PORT = 8080;
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
-    private HttpServer httpServer;
-    Gson gson = new Gson();
+    private HttpServer server;
 
     public void startHttpServer() throws IOException {
-        httpServer = HttpServer.create();
-        httpServer.bind(new InetSocketAddress(PORT), 0);
-        httpServer.createContext("/tasks", new SomeHandler());
-        httpServer.start(); // запускаем сервер
+        server = HttpServer.create();
+        server.bind(new InetSocketAddress(PORT), 0);
+        server.createContext("/tasks", new SomeHandler());
+        server.start(); // запускаем сервер
 
         System.out.println("HTTP-сервер запущен на " + PORT + " порту!");
-    }
-
-    public void stopHttpServer() {
-        httpServer.stop(0);
     }
 
     private int parseIdFromHttp(HttpExchange ex) {
@@ -83,7 +78,7 @@ public class HttpTaskServer {
             if (parts.length == 3 && "tasks".equals(parts[1]) && "task".equals(parts[2]) && parseIdFromHttp(ex) == -1) {
                 if ("GET".equals(requestMethod)) {
                     try {
-                        String getAllTasksJson = gson.toJson(taskManager.getAllTasks());
+                        String getAllTasksJson = GsonClass.gson.toJson(taskManager.getAllTasks());
                         writeResponse(ex, getAllTasksJson, 200);
                     } catch (Exception e) {
                         writeResponse(ex, "Ошибка. " + e.getMessage(), 400);
@@ -96,7 +91,7 @@ public class HttpTaskServer {
             if (parts.length == 3 && "tasks".equals(parts[1]) && "task".equals(parts[2]) && parseIdFromHttp(ex) != -1) {
                 if ("GET".equals(requestMethod)) {
                     try {
-                        String getTaskByIdJson = gson.toJson(taskManager.getTaskById(parseIdFromHttp(ex)));
+                        String getTaskByIdJson = GsonClass.gson.toJson(taskManager.getTaskById(parseIdFromHttp(ex)));
                         writeResponse(ex, getTaskByIdJson, 200);
                     } catch (Exception e) {
                         writeResponse(ex, "Ошибка. " + e.getMessage(), 404);
@@ -105,17 +100,17 @@ public class HttpTaskServer {
                     return;
                 }
             }
-//createdTask
+//createTask
             if (parts.length == 3 && "tasks".equals(parts[1]) && "task".equals(parts[2]) && parseIdFromHttp(ex) == -1) {
                 if ("POST".equals(requestMethod)) {
                     try {
                         InputStream is = ex.getRequestBody();
                         String body = new String(is.readAllBytes(), DEFAULT_CHARSET);
 
-                        Task taskFromJson = gson.fromJson(body, Task.class);
+                        Task taskFromJson = GsonClass.gson.fromJson(body, Task.class);
                         Task createdTask = taskManager.createTask(taskFromJson);
 
-                        String createdTaskJson = gson.toJson(createdTask);
+                        String createdTaskJson = GsonClass.gson.toJson(createdTask);
                         writeResponse(ex, createdTaskJson, 200);
                     } catch (Exception e) {
                         writeResponse(ex, "Ошибка. " + e.getMessage(), 400);
@@ -154,7 +149,7 @@ public class HttpTaskServer {
             if (parts.length == 3 && "tasks".equals(parts[1]) && "subtask".equals(parts[2]) && parseIdFromHttp(ex) == -1) {
                 if ("GET".equals(requestMethod)) {
                     try {
-                        String getAllSubTasksJson = gson.toJson(taskManager.getAllSubTasks());
+                        String getAllSubTasksJson = GsonClass.gson.toJson(taskManager.getAllSubTasks());
                         writeResponse(ex, getAllSubTasksJson, 200);
                     } catch (Exception e) {
                         writeResponse(ex, "Ошибка. " + e.getMessage(), 400);
@@ -167,7 +162,7 @@ public class HttpTaskServer {
             if (parts.length == 3 && "tasks".equals(parts[1]) && "subtask".equals(parts[2]) && parseIdFromHttp(ex) != -1) {
                 if ("GET".equals(requestMethod)) {
                     try {
-                        String getSubTaskByIdJson = gson.toJson(taskManager.getSubTaskById(parseIdFromHttp(ex)));
+                        String getSubTaskByIdJson = GsonClass.gson.toJson(taskManager.getSubTaskById(parseIdFromHttp(ex)));
                         writeResponse(ex, getSubTaskByIdJson, 200);
                     } catch (Exception e) {
                         writeResponse(ex, "Ошибка. " + e.getMessage(), 404);
@@ -176,17 +171,17 @@ public class HttpTaskServer {
                     return;
                 }
             }
-//createdSubTask
+//createSubTask
             if (parts.length == 3 && "tasks".equals(parts[1]) && "subtask".equals(parts[2]) && parseIdFromHttp(ex) == -1) {
                 if ("POST".equals(requestMethod)) {
                     try {
                         InputStream is = ex.getRequestBody();
                         String body = new String(is.readAllBytes(), DEFAULT_CHARSET);
 
-                        SubTask subTaskFromJson = gson.fromJson(body, SubTask.class);
+                        SubTask subTaskFromJson = GsonClass.gson.fromJson(body, SubTask.class);
                         SubTask createdSubTask = taskManager.createSubTask(subTaskFromJson);
 
-                        String createdSubTaskJson = gson.toJson(createdSubTask);
+                        String createdSubTaskJson = GsonClass.gson.toJson(createdSubTask);
                         writeResponse(ex, createdSubTaskJson, 200);
                     } catch (Exception e) {
                         writeResponse(ex, "Ошибка. " + e.getMessage(), 400);
@@ -225,7 +220,7 @@ public class HttpTaskServer {
             if (parts.length == 3 && "tasks".equals(parts[1]) && "epic".equals(parts[2]) && parseIdFromHttp(ex) == -1) {
                 if ("GET".equals(requestMethod)) {
                     try {
-                        String getAllEpicsJson = gson.toJson(taskManager.getAllEpics());
+                        String getAllEpicsJson = GsonClass.gson.toJson(taskManager.getAllEpics());
                         writeResponse(ex, getAllEpicsJson, 200);
                     } catch (Exception e) {
                         writeResponse(ex, "Ошибка. " + e.getMessage(), 400);
@@ -238,7 +233,7 @@ public class HttpTaskServer {
             if (parts.length == 3 && "tasks".equals(parts[1]) && "epic".equals(parts[2]) && parseIdFromHttp(ex) != -1) {
                 if ("GET".equals(requestMethod)) {
                     try {
-                        String getEpicByIdJson = gson.toJson(taskManager.getEpicById(parseIdFromHttp(ex)));
+                        String getEpicByIdJson = GsonClass.gson.toJson(taskManager.getEpicById(parseIdFromHttp(ex)));
                         writeResponse(ex, getEpicByIdJson, 200);
                     } catch (Exception e) {
                         writeResponse(ex, "Ошибка. " + e.getMessage(), 404);
@@ -254,10 +249,10 @@ public class HttpTaskServer {
                         InputStream is = ex.getRequestBody();
                         String body = new String(is.readAllBytes(), DEFAULT_CHARSET);
 
-                        Task epicFromJson = gson.fromJson(body, Epic.class);
+                        Task epicFromJson = GsonClass.gson.fromJson(body, Epic.class);
                         Task createdEpic = taskManager.createTask(epicFromJson);
 
-                        String createdEpicJson = gson.toJson(createdEpic);
+                        String createdEpicJson = GsonClass.gson.toJson(createdEpic);
                         writeResponse(ex, createdEpicJson, 200);
                     } catch (Exception e) {
                         writeResponse(ex, "Ошибка. " + e.getMessage(), 400);
@@ -297,7 +292,7 @@ public class HttpTaskServer {
                     && parseIdFromHttp(ex) != -1) {
                 if ("GET".equals(requestMethod)) {
                     try {
-                        String getEpicSubTasksJson = gson.toJson(taskManager.getEpicSubTasks(
+                        String getEpicSubTasksJson = GsonClass.gson.toJson(taskManager.getEpicSubTasks(
                                 taskManager.getEpicById(parseIdFromHttp(ex))));
                         writeResponse(ex, getEpicSubTasksJson, 200);
                     } catch (Exception e) {
@@ -311,7 +306,7 @@ public class HttpTaskServer {
             if (parts.length == 3 && "tasks".equals(parts[1]) && "history".equals(parts[2]) && parseIdFromHttp(ex) == -1) {
                 if ("GET".equals(requestMethod)) {
                     try {
-                        String getHistoryNameJson = gson.toJson(taskManager.getHistoryName());
+                        String getHistoryNameJson = GsonClass.gson.toJson(taskManager.getHistoryName());
                         writeResponse(ex, getHistoryNameJson, 200); // В РЕСПОНС ЭПИК ВСМЕСТЕ С РЕЛЕЙТЕД САБТАСК
                     } catch (Exception e) {
                         writeResponse(ex, "Ошибка. " + e.getMessage(), 400);
@@ -325,7 +320,7 @@ public class HttpTaskServer {
             if (parts.length == 2 && "tasks".equals(parts[1])) {
                 if ("GET".equals(requestMethod)) {
                     try {
-                        String getPrioritizedTasksJson = gson.toJson(taskManager.getPrioritizedTasks());
+                        String getPrioritizedTasksJson = GsonClass.gson.toJson(taskManager.getPrioritizedTasks());
                         writeResponse(ex, getPrioritizedTasksJson, 200);
                     } catch (Exception e) {
                         writeResponse(ex, "Ошибка. " + e.getMessage(), 400);
@@ -336,5 +331,9 @@ public class HttpTaskServer {
             }
             writeResponse(ex, "Такого endpoint не существует", 404);
         }
+    }
+
+    public void stop() {
+        server.stop(0);
     }
 }

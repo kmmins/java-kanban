@@ -26,7 +26,6 @@ public class KVTaskClient {
     }
 
     void put(String key, String json) throws IOException, InterruptedException {
-
         URI uri = URI.create(url + "save/" + key + "?API_TOKEN=" + token);
         final HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString(json);
         HttpRequest.Builder requestBuilder = HttpRequest.newBuilder();
@@ -46,6 +45,9 @@ public class KVTaskClient {
                 .uri(uri)
                 .build();
         HttpResponse<String> result = kvClient.send(request, HttpResponse.BodyHandlers.ofString());
+        if (result.statusCode() == 404) {
+            throw new NoDataException("Данные отсутствуют: " + key);
+        }
         return result.body();
     }
 }
