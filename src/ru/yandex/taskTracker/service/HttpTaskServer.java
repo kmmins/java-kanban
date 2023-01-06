@@ -119,6 +119,24 @@ public class HttpTaskServer {
                     return;
                 }
             }
+//updateTask
+            if (parts.length == 3 && "tasks".equals(parts[1]) && "task".equals(parts[2]) && parseIdFromHttp(ex) != -1) {
+                if ("POST".equals(requestMethod)) {
+                    try {
+                        InputStream is = ex.getRequestBody();
+                        String body = new String(is.readAllBytes(), DEFAULT_CHARSET);
+
+                        Task updateTaskFromJson = GsonClass.gson.fromJson(body, Task.class);
+                        taskManager.updateTask(updateTaskFromJson);
+
+                        writeResponse(ex, "Задача c id: " + parseIdFromHttp(ex) + " обновлена", 200);
+                    } catch (Exception e) {
+                        writeResponse(ex, "Ошибка. " + e.getMessage(), 404);
+                        e.printStackTrace();
+                    }
+                    return;
+                }
+            }
 //deleteTaskById
             if (parts.length == 3 && "tasks".equals(parts[1]) && "task".equals(parts[2]) && parseIdFromHttp(ex) != -1) {
                 if ("DELETE".equals(requestMethod)) {
@@ -190,6 +208,24 @@ public class HttpTaskServer {
                     return;
                 }
             }
+//updateSubTask
+            if (parts.length == 3 && "tasks".equals(parts[1]) && "subtask".equals(parts[2]) && parseIdFromHttp(ex) != -1) {
+                if ("POST".equals(requestMethod)) {
+                    try {
+                        InputStream is = ex.getRequestBody();
+                        String body = new String(is.readAllBytes(), DEFAULT_CHARSET);
+
+                        SubTask updateSubTaskFromJson = GsonClass.gson.fromJson(body, SubTask.class);
+                        taskManager.updateSubTask(updateSubTaskFromJson);
+
+                        writeResponse(ex, "Подзадача c id: " + parseIdFromHttp(ex) + " обновлена", 200);
+                    } catch (Exception e) {
+                        writeResponse(ex, "Ошибка. " + e.getMessage(), 404);
+                        e.printStackTrace();
+                    }
+                    return;
+                }
+            }
 //deleteSubTaskById
             if (parts.length == 3 && "tasks".equals(parts[1]) && "subtask".equals(parts[2]) && parseIdFromHttp(ex) != -1) {
                 if ("DELETE".equals(requestMethod)) {
@@ -249,8 +285,8 @@ public class HttpTaskServer {
                         InputStream is = ex.getRequestBody();
                         String body = new String(is.readAllBytes(), DEFAULT_CHARSET);
 
-                        Task epicFromJson = GsonClass.gson.fromJson(body, Epic.class);
-                        Task createdEpic = taskManager.createTask(epicFromJson);
+                        Epic epicFromJson = GsonClass.gson.fromJson(body, Epic.class);
+                        Epic createdEpic = taskManager.createEpic(epicFromJson);
 
                         String createdEpicJson = GsonClass.gson.toJson(createdEpic);
                         writeResponse(ex, createdEpicJson, 200);
@@ -261,11 +297,29 @@ public class HttpTaskServer {
                     return;
                 }
             }
+//updateEpic
+            if (parts.length == 3 && "tasks".equals(parts[1]) && "epic".equals(parts[2]) && parseIdFromHttp(ex) != -1) {
+                if ("POST".equals(requestMethod)) {
+                    try {
+                        InputStream is = ex.getRequestBody();
+                        String body = new String(is.readAllBytes(), DEFAULT_CHARSET);
+
+                        Epic updateEpicFromJson = GsonClass.gson.fromJson(body, Epic.class);
+                        taskManager.updateEpic(updateEpicFromJson);
+
+                        writeResponse(ex, "Эпик c id: " + parseIdFromHttp(ex) + " обновлен", 200);
+                    } catch (Exception e) {
+                        writeResponse(ex, "Ошибка. " + e.getMessage(), 404);
+                        e.printStackTrace();
+                    }
+                    return;
+                }
+            }
 //deleteEpicById
             if (parts.length == 3 && "tasks".equals(parts[1]) && "epic".equals(parts[2]) && parseIdFromHttp(ex) != -1) {
                 if ("DELETE".equals(requestMethod)) {
                     try {
-                        taskManager.deleteEpicById(parseIdFromHttp(ex)); // НЕ РАБОТАЕТ DELETE ;(((((
+                        taskManager.deleteEpicById(parseIdFromHttp(ex));
                         writeResponse(ex, "Эпик c id: " + parseIdFromHttp(ex) + " удален", 200);
                     } catch (Exception e) {
                         writeResponse(ex, "Ошибка. " + e.getMessage(), 404);
@@ -278,7 +332,7 @@ public class HttpTaskServer {
             if (parts.length == 3 && "tasks".equals(parts[1]) && "epic".equals(parts[2]) && parseIdFromHttp(ex) == -1) {
                 if ("DELETE".equals(requestMethod)) {
                     try {
-                        taskManager.deleteAllEpics(); // НЕ РАБОТАЕТ DELETE ;(((((
+                        taskManager.deleteAllEpics();
                         writeResponse(ex, "Все задачи удалены", 200);
                     } catch (Exception e) {
                         writeResponse(ex, "Ошибка. " + e.getMessage(), 400);
@@ -307,7 +361,7 @@ public class HttpTaskServer {
                 if ("GET".equals(requestMethod)) {
                     try {
                         String getHistoryNameJson = GsonClass.gson.toJson(taskManager.getHistoryName());
-                        writeResponse(ex, getHistoryNameJson, 200); // В РЕСПОНС ЭПИК ВСМЕСТЕ С РЕЛЕЙТЕД САБТАСК
+                        writeResponse(ex, getHistoryNameJson, 200);
                     } catch (Exception e) {
                         writeResponse(ex, "Ошибка. " + e.getMessage(), 400);
                         e.printStackTrace();
