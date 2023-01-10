@@ -36,6 +36,7 @@ public class HttpTaskServerTests {
         testServer = new HttpTaskServer();
         testServer.startHttpServer();
         HttpClient client = HttpClient.newHttpClient();
+
 //задачи
         Task task1 = new Task();
         task1.setName("Задача 1");
