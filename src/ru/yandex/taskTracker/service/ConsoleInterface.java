@@ -9,10 +9,9 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ConsoleInterface {
+
     private static final DateTimeFormatter format = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
-
     private final TaskManager taskManager;
-
     private final Scanner scanner;
 
     public ConsoleInterface() throws ManagerSaveException, SameTimeTaskException {

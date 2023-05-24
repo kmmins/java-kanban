@@ -13,6 +13,7 @@ import java.time.format.DateTimeFormatter;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class HistoryManagerTests {
+
     private final HistoryManager historyManager = Managers.getDefaultHistory();
     private final TaskManager taskManager = Managers.getInMemory();
     private static final DateTimeFormatter format = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");

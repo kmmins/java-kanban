@@ -17,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static ru.yandex.taskTracker.model.TaskStatus.*;
 
 abstract class TaskManagerTest<T extends TaskManager> {
+
     protected T taskManager;
     private static final DateTimeFormatter format = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 

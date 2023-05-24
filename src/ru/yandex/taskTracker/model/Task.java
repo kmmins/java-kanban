@@ -4,14 +4,12 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 public class Task {
+
     private int id;
     private String name;
     private String description;
-
     private LocalDateTime startTime;
-
     private Duration duration;
-
     protected TaskStatus status = TaskStatus.NEW;
 
     public Task() {
@@ -70,7 +68,7 @@ public class Task {
         return duration;
     }
 
-    public LocalDateTime getEndTime (){
+    public LocalDateTime getEndTime() {
         if (startTime == null) {
             return null;
         }

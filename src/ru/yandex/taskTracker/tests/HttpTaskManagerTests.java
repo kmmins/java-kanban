@@ -4,7 +4,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import ru.yandex.taskTracker.service.HttpTaskManager;
 import ru.yandex.taskTracker.service.KVServer;
-import ru.yandex.taskTracker.tests.TaskManagerTest;
 
 import java.io.IOException;
 

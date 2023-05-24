@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class CustomLinkedList {
+
     public Node<Task> head;
     public Node<Task> tail;
 

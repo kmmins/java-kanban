@@ -7,9 +7,7 @@ import java.util.ArrayList;
 public class Epic extends Task {
 
     private ArrayList<SubTask> relatedSubTasks;
-
     private LocalDateTime endTime;
-
     public Epic() {
     }
 
@@ -27,7 +25,7 @@ public class Epic extends Task {
     }
 
     @Override
-    public LocalDateTime getEndTime(){
+    public LocalDateTime getEndTime() {
         return endTime;
     }
 }

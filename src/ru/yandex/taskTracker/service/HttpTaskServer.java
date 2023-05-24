@@ -19,7 +19,6 @@ import java.nio.charset.StandardCharsets;
 public class HttpTaskServer {
 
     private final TaskManager taskManager = Managers.getFileBacked();
-
     private static final int PORT = 8080;
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
     private HttpServer server;
